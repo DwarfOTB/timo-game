@@ -76,25 +76,29 @@ export function TimoJar({ position = [0, 0, 0] }) {
 
       <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'timo-jar'} onClose={closeModal} dark>
-          <div style={{ maxWidth: '340px', width: '88%', textAlign: 'center', padding: '0 20px' }}>
+          <div style={{
+            width: '100%', maxWidth: '360px',
+            background: 'rgba(10,5,2,0.7)',
+            border: '1px solid rgba(180,210,230,0.12)',
+            borderRadius: '20px',
+            padding: '44px 36px 36px',
+            textAlign: 'center',
+          }}>
             <div style={{
-              width: '80px', height: '80px', borderRadius: '50%',
-              background: 'radial-gradient(circle, rgba(180,210,230,0.35) 0%, transparent 70%)',
-              margin: '0 auto 36px',
-              boxShadow: '0 0 50px rgba(180,210,230,0.2)',
+              width: '64px', height: '64px', borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(180,210,230,0.30) 0%, transparent 70%)',
+              margin: '0 auto 32px',
+              boxShadow: '0 0 40px rgba(180,210,230,0.15)',
             }} />
             <div style={{
-              fontSize: '30px',
-              lineHeight: 2.1,
-              color: '#f5ede0',
+              fontSize: '26px',
+              lineHeight: 2.0,
+              color: '#f0e8e0',
               whiteSpace: 'pre-wrap',
               letterSpacing: '0.5px',
               fontFamily: 'Caveat, cursive',
             }}>
               {TIMO_JAR_NOTE}
-            </div>
-            <div style={{ marginTop: '52px', fontSize: '11px', color: 'rgba(245,237,224,0.2)', letterSpacing: '1px', fontFamily: 'system-ui' }}>
-              tocca per chiudere
             </div>
           </div>
         </ModalOverlay>

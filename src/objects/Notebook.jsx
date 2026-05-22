@@ -68,12 +68,11 @@ export function Notebook({ position = [0, 0, 0] }) {
           <div
             style={{
               display: 'flex',
-              maxWidth: '760px', width: '94%',
+              width: '100%', maxWidth: '720px',
               background: PAGE_COLOR,
               borderRadius: '6px',
               boxShadow: '0 24px 80px rgba(0,0,0,0.45)',
               overflow: 'hidden',
-              minHeight: '400px',
             }}
           >
             {/* Page 1 */}

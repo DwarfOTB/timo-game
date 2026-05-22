@@ -64,7 +64,7 @@ export function Calendar({ position = [0, 0, 0] }) {
             background: '#fff8f3',
             borderRadius: '22px',
             padding: '44px 52px 36px',
-            maxWidth: '340px', width: '88%',
+            width: '100%', maxWidth: '380px',
             textAlign: 'center',
             boxShadow: '0 24px 80px rgba(0,0,0,0.22)',
           }}>

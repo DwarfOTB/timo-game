@@ -66,7 +66,7 @@ export function SecretDrawer({ position = [0, 0, 0] }) {
       <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'secret-drawer'} onClose={closeModal} dark>
           <div style={{
-            maxWidth: '320px', width: '88%',
+            width: '100%', maxWidth: '360px',
             background: '#1a1008',
             border: '1px solid rgba(200,168,122,0.15)',
             borderRadius: '16px',

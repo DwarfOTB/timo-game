@@ -92,3 +92,7 @@ html, body, #root {
 /* Spotify record player song row hover */
 .song-row { transition: background 0.18s; }
 .song-row:hover { background: rgba(255,255,255,0.08) !important; }
+
+/* Modal scroll container — hide scrollbar */
+.modal-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+.modal-scroll::-webkit-scrollbar { display: none; }

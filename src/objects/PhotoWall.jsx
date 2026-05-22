@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Html } from '@react-three/drei'
 import { useRoomStore } from '../store/useRoomStore'
 import { ModalOverlay } from '../ui/ModalOverlay'
@@ -62,10 +62,19 @@ export function PhotoWall() {
 
   const showCaptions = unlockedItems.includes('photo-captions')
   const [selected, setSelected] = useState(0)
+  const swipeStart = useRef(null)
 
   const handleSelect = (i) => { setSelected(i); openModal('photo-wall') }
   const prev = () => setSelected(s => (s - 1 + PHOTOS.length) % PHOTOS.length)
   const next = () => setSelected(s => (s + 1) % PHOTOS.length)
+
+  const onTouchStart = (e) => { swipeStart.current = e.touches[0].clientX }
+  const onTouchEnd   = (e) => {
+    if (swipeStart.current === null) return
+    const dx = swipeStart.current - e.changedTouches[0].clientX
+    if (Math.abs(dx) > 40) dx > 0 ? next() : prev()
+    swipeStart.current = null
+  }
 
   // Keyboard navigation when modal open
   useEffect(() => {
@@ -86,13 +95,17 @@ export function PhotoWall() {
 
       <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'photo-wall'} onClose={closeModal} dark>
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div
+            style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}
+            onTouchStart={onTouchStart}
+            onTouchEnd={onTouchEnd}
+          >
             {/* Polaroid card */}
             <div style={{
               background: '#ffffff',
               padding: '14px 14px 52px',
               boxShadow: '0 24px 80px rgba(0,0,0,0.55)',
-              maxWidth: '400px', width: '84vw',
+              width: '100%', maxWidth: '380px',
               transform: `rotate(${tilt(selected) * (180 / Math.PI) * 0.35}deg)`,
             }}>
               <div style={{ width: '100%', aspectRatio: '1', background: '#f0e8e0', overflow: 'hidden' }}>
@@ -118,17 +131,13 @@ export function PhotoWall() {
             </div>
 
             {/* Navigation */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '28px', marginTop: '32px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '28px', marginTop: '28px' }}>
               <button className="modal-nav" onClick={(e) => { e.stopPropagation(); prev() }}>‹</button>
-              <span style={{ color: 'rgba(255,255,255,0.35)', fontFamily: 'system-ui', fontSize: '12px', letterSpacing: '1px' }}>
+              <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '12px', letterSpacing: '1px' }}>
                 {selected + 1} / {PHOTOS.length}
               </span>
               <button className="modal-nav" onClick={(e) => { e.stopPropagation(); next() }}>›</button>
             </div>
-
-            <button onClick={closeModal} className="modal-close-dark" style={{ marginTop: '20px' }}>
-              chiudi
-            </button>
           </div>
         </ModalOverlay>
       </Html>

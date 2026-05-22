@@ -101,7 +101,7 @@ export function RecordPlayer({ position = [0, 0, 0] }) {
             border: '1px solid rgba(92,61,46,0.6)',
             borderRadius: '20px',
             padding: '28px 24px 24px',
-            maxWidth: '400px', width: '92%',
+            width: '100%', maxWidth: '480px',
             fontFamily: 'system-ui, sans-serif',
             color: '#f5ede0',
             maxHeight: '85vh', overflowY: 'auto',
