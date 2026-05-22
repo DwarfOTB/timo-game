@@ -1,7 +1,7 @@
 import { useRoomStore } from '../store/useRoomStore'
 import { SONGS } from '../data/songs'
 
-const FIRST_DATE = new Date('2025-04-13')
+const FIRST_DATE = new Date('2026-04-13')
 
 export function HUD() {
   const audioPlaying = useRoomStore(s => s.audioPlaying)

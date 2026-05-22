@@ -1,7 +1,7 @@
 import { create } from 'zustand'
 import { persist } from 'zustand/middleware'
 
-const FIRST_DATE = new Date('2025-04-13')
+const FIRST_DATE = new Date('2026-04-13')
 
 export const useRoomStore = create(
   persist(
