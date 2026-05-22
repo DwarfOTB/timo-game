@@ -4,11 +4,17 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+:root {
+  --fuchsia: #c4306e;
+  --fuchsia-soft: rgba(196,48,110,0.18);
+}
+
 html, body, #root {
   width: 100%;
   height: 100%;
   overflow: hidden;
   background: #f9f3ea;
+  font-family: 'Figtree', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -28,7 +34,7 @@ html, body, #root {
   border-radius: 50px;
   font-size: 12px;
   cursor: pointer;
-  font-family: system-ui, sans-serif;
+  font-family: 'Figtree', system-ui, sans-serif;
   letter-spacing: 0.5px;
   transition: background 0.15s, color 0.15s, border-color 0.15s;
 }
@@ -45,7 +51,7 @@ html, body, #root {
   border-radius: 50px;
   font-size: 12px;
   cursor: pointer;
-  font-family: system-ui, sans-serif;
+  font-family: 'Figtree', system-ui, sans-serif;
   letter-spacing: 0.5px;
   transition: background 0.15s, color 0.15s;
 }

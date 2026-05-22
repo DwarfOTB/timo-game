@@ -63,7 +63,7 @@ export function Notebook({ position = [0, 0, 0] }) {
         </mesh>
       </InteractiveObject>
 
-      <Html fullscreen>
+      <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'notebook'} onClose={closeModal}>
           <div
             style={{

@@ -28,6 +28,7 @@ export function ModalOverlay({ isOpen, onClose, dark = false, children }) {
             display: 'flex', flexDirection: 'column',
             alignItems: 'center', justifyContent: 'center',
             zIndex: 100,
+            pointerEvents: 'auto',
           }}
           onClick={onClose}
         >
@@ -36,7 +37,7 @@ export function ModalOverlay({ isOpen, onClose, dark = false, children }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: 8 }}
             transition={SPRING}
-            style={{ display: 'contents' }}
+            style={{ pointerEvents: 'auto', display: 'flex', flexDirection: 'column', alignItems: 'center' }}
             onClick={e => e.stopPropagation()}
           >
             {children}

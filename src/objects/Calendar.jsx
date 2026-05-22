@@ -58,7 +58,7 @@ export function Calendar({ position = [0, 0, 0] }) {
         </Html>
       </InteractiveObject>
 
-      <Html fullscreen>
+      <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'calendar'} onClose={closeModal}>
           <div style={{
             background: '#fff8f3',

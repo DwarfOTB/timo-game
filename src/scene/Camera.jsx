@@ -6,7 +6,7 @@ export function Camera() {
 
   useEffect(() => {
     if (camRef.current) {
-      camRef.current.lookAt(0, 0, 0)
+      camRef.current.lookAt(0, 1.5, 0)
       camRef.current.updateProjectionMatrix()
     }
   }, [])

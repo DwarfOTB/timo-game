@@ -40,7 +40,7 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
             borderRadius: '20px',
             whiteSpace: 'nowrap',
             pointerEvents: 'none',
-            border: '1px solid rgba(200,168,122,0.22)',
+            border: '1px solid rgba(196,48,110,0.35)',
             boxShadow: '0 3px 14px rgba(0,0,0,0.25)',
             userSelect: 'none',
           }}>

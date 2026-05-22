@@ -23,13 +23,16 @@ export function HUD() {
         padding: '8px 18px',
       }}>
         <span style={{
-          fontFamily: 'Caveat, cursive',
-          fontSize: '17px',
+          fontFamily: 'Figtree, system-ui, sans-serif',
+          fontSize: '14px',
+          fontWeight: 600,
           letterSpacing: '0.3px',
           color: 'rgba(61,43,31,0.75)',
           userSelect: 'none',
         }}>
-          {days === 0 ? 'oggi comincia tutto ♡' : `${days} giorni insieme`}
+          {days === 0 ? 'oggi comincia tutto' : (
+            <><span style={{ color: 'var(--fuchsia)', fontWeight: 700 }}>{days}</span>{' giorni insieme'}</>
+          )}
         </span>
       </div>
 

@@ -84,7 +84,7 @@ export function PhotoWall() {
         <Polaroid key={photo.id} photo={photo} index={i} onSelect={handleSelect} showCaption={showCaptions} />
       ))}
 
-      <Html fullscreen>
+      <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'photo-wall'} onClose={closeModal} dark>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             {/* Polaroid card */}

@@ -74,7 +74,7 @@ export function TimoJar({ position = [0, 0, 0] }) {
         </points>
       </InteractiveObject>
 
-      <Html fullscreen>
+      <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'timo-jar'} onClose={closeModal} dark>
           <div style={{ maxWidth: '340px', width: '88%', textAlign: 'center', padding: '0 20px' }}>
             <div style={{

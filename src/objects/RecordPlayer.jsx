@@ -94,7 +94,7 @@ export function RecordPlayer({ position = [0, 0, 0] }) {
         </mesh>
       </InteractiveObject>
 
-      <Html fullscreen>
+      <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'record-player'} onClose={handleClose}>
           <div style={{
             background: '#1e1108',

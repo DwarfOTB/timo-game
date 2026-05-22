@@ -57,7 +57,7 @@ export default function App() {
   useVisitSystem()
 
   return (
-    <div style={{ width: '100vw', height: '100vh', position: 'relative' }}>
+    <div style={{ width: '100vw', height: '100vh', position: 'relative', touchAction: 'none' }}>
       <Canvas
         gl={{ antialias: true, alpha: false }}
         dpr={Math.min(window.devicePixelRatio, 2)}
