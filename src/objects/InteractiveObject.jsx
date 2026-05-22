@@ -1,9 +1,10 @@
 import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useRoomStore } from '../store/useRoomStore'
 
-export function InteractiveObject({ children, objectId, position = [0, 0, 0] }) {
+export function InteractiveObject({ children, objectId, position = [0, 0, 0], name }) {
   const [hovered, setHovered] = useState(false)
   const openModal = useRoomStore(s => s.openModal)
   const groupRef  = useRef()
@@ -26,6 +27,27 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0] }) 
       onClick={(e) => { e.stopPropagation(); openModal(objectId) }}
     >
       {children}
+
+      {hovered && name && (
+        <Html position={[0, 0.82, 0]} center zIndexRange={[1, 1]}>
+          <div style={{
+            background: 'rgba(22,13,6,0.88)',
+            color: 'rgba(245,237,224,0.92)',
+            fontFamily: 'Caveat, cursive',
+            fontSize: '15px',
+            letterSpacing: '0.5px',
+            padding: '5px 14px',
+            borderRadius: '20px',
+            whiteSpace: 'nowrap',
+            pointerEvents: 'none',
+            border: '1px solid rgba(200,168,122,0.22)',
+            boxShadow: '0 3px 14px rgba(0,0,0,0.25)',
+            userSelect: 'none',
+          }}>
+            {name}
+          </div>
+        </Html>
+      )}
     </group>
   )
 }

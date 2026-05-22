@@ -10,31 +10,55 @@ export function HUD() {
 
   return (
     <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 10 }}>
-      {/* Days counter — bottom left */}
+
+      {/* Days pill — bottom left */}
       <div style={{
-        position: 'absolute', bottom: 24, left: 24,
-        fontFamily: 'Caveat, cursive',
-        fontSize: '15px',
-        color: 'rgba(61,43,31,0.45)',
-        letterSpacing: '0.5px',
-        userSelect: 'none',
+        position: 'absolute', bottom: 28, left: 28,
+        display: 'inline-flex', alignItems: 'center',
+        background: 'rgba(61,43,31,0.10)',
+        backdropFilter: 'blur(8px)',
+        WebkitBackdropFilter: 'blur(8px)',
+        border: '1px solid rgba(61,43,31,0.14)',
+        borderRadius: '50px',
+        padding: '8px 18px',
       }}>
-        {days} giorni insieme
+        <span style={{
+          fontFamily: 'Caveat, cursive',
+          fontSize: '17px',
+          letterSpacing: '0.3px',
+          color: 'rgba(61,43,31,0.75)',
+          userSelect: 'none',
+        }}>
+          {days === 0 ? 'oggi comincia tutto ♡' : `${days} giorni insieme`}
+        </span>
       </div>
 
-      {/* Audio indicator — bottom right, only when playing */}
+      {/* Now-playing pill — bottom right */}
       {playingSong && (
         <div style={{
-          position: 'absolute', bottom: 24, right: 24,
-          display: 'flex', alignItems: 'center', gap: '6px',
-          background: 'rgba(26,16,8,0.72)',
-          border: '1px solid rgba(200,168,122,0.2)',
+          position: 'absolute', bottom: 28, right: 28,
+          display: 'inline-flex', alignItems: 'center', gap: '8px',
+          background: 'rgba(22,13,6,0.82)',
+          border: '1px solid rgba(200,168,122,0.22)',
           borderRadius: '50px',
-          padding: '6px 14px',
-          backdropFilter: 'blur(8px)',
+          padding: '8px 16px',
+          backdropFilter: 'blur(10px)',
+          WebkitBackdropFilter: 'blur(10px)',
+          boxShadow: '0 2px 20px rgba(0,0,0,0.18)',
         }}>
-          <span style={{ fontSize: '10px', color: '#c8a87a', animation: 'pulse 1.5s infinite' }}>♫</span>
-          <span style={{ fontFamily: 'Caveat, cursive', fontSize: '13px', color: 'rgba(245,237,224,0.7)' }}>
+          <span style={{
+            fontSize: '12px',
+            color: '#c8a87a',
+            animation: 'hud-pulse 1.8s ease-in-out infinite',
+            display: 'inline-block',
+          }}>♫</span>
+          <span style={{
+            fontFamily: 'Caveat, cursive',
+            fontSize: '15px',
+            color: 'rgba(245,237,224,0.82)',
+            letterSpacing: '0.3px',
+            userSelect: 'none',
+          }}>
             {playingSong.title}
           </span>
         </div>

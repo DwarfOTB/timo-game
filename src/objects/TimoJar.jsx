@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useRoomStore } from '../store/useRoomStore'
+import { ModalOverlay } from '../ui/ModalOverlay'
 import { TIMO_JAR_NOTE } from '../data/messages'
 import { InteractiveObject } from './InteractiveObject'
 
@@ -16,7 +17,6 @@ export function TimoJar({ position = [0, 0, 0] }) {
   const activeModal  = useRoomStore(s => s.activeModal)
   const closeModal   = useRoomStore(s => s.closeModal)
 
-  // Stable particle positions inside jar
   const positions = useMemo(() => {
     const arr = new Float32Array(PARTICLE_CNT * 3)
     for (let i = 0; i < PARTICLE_CNT; i++) {
@@ -32,32 +32,17 @@ export function TimoJar({ position = [0, 0, 0] }) {
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime()
-    if (particlesRef.current) {
-      particlesRef.current.rotation.y = t * 0.4
-    }
-    if (glowRef.current) {
-      glowRef.current.material.emissiveIntensity = 0.08 + Math.sin(t * 1.8) * 0.04
-    }
+    if (particlesRef.current) particlesRef.current.rotation.y = t * 0.4
+    if (glowRef.current) glowRef.current.material.emissiveIntensity = 0.08 + Math.sin(t * 1.8) * 0.04
   })
 
   return (
     <group position={position}>
       <InteractiveObject objectId="timo-jar" position={[0, 0, 0]}>
-        {/* Jar body — glass */}
         <mesh ref={glowRef} castShadow>
           <cylinderGeometry args={[0.16, 0.14, 0.42, 18]} />
-          <meshStandardMaterial
-            color={GLASS_COLOR}
-            transparent
-            opacity={0.45}
-            roughness={0.05}
-            metalness={0.1}
-            emissive="#aaccff"
-            emissiveIntensity={0.08}
-          />
+          <meshStandardMaterial color={GLASS_COLOR} transparent opacity={0.45} roughness={0.05} metalness={0.1} emissive="#aaccff" emissiveIntensity={0.08} />
         </mesh>
-
-        {/* Lid */}
         <mesh position={[0, 0.24, 0]} castShadow>
           <cylinderGeometry args={[0.175, 0.175, 0.07, 18]} />
           <meshStandardMaterial color={LID_COLOR} roughness={0.85} />
@@ -66,8 +51,6 @@ export function TimoJar({ position = [0, 0, 0] }) {
           <cylinderGeometry args={[0.06, 0.06, 0.05, 10]} />
           <meshStandardMaterial color={LID_COLOR} roughness={0.85} />
         </mesh>
-
-        {/* Label — "timo" */}
         <Html transform position={[0.162, 0.05, 0]} rotation={[0, Math.PI / 2, 0]} scale={0.007}>
           <div style={{
             width: '60px', textAlign: 'center',
@@ -83,79 +66,39 @@ export function TimoJar({ position = [0, 0, 0] }) {
             timo
           </div>
         </Html>
-
-        {/* Internal particles */}
         <points ref={particlesRef}>
           <bufferGeometry>
-            <bufferAttribute
-              attach="attributes-position"
-              array={positions}
-              count={PARTICLE_CNT}
-              itemSize={3}
-            />
+            <bufferAttribute attach="attributes-position" array={positions} count={PARTICLE_CNT} itemSize={3} />
           </bufferGeometry>
-          <pointsMaterial
-            color="#f4c8d0"
-            size={0.018}
-            transparent
-            opacity={0.75}
-            sizeAttenuation
-          />
+          <pointsMaterial color="#f4c8d0" size={0.018} transparent opacity={0.75} sizeAttenuation />
         </points>
       </InteractiveObject>
 
-      {/* Timo jar modal — special dark intimate style */}
-      {activeModal === 'timo-jar' && (
-        <Html fullscreen>
-          <div
-            style={{
-              position: 'fixed', inset: 0,
-              background: '#1a1008',
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              zIndex: 100,
-              cursor: 'pointer',
-            }}
-            onClick={closeModal}
-          >
-            <div
-              style={{
-                maxWidth: '360px', width: '88%',
-                textAlign: 'center',
-                padding: '0 20px',
-                fontFamily: 'Caveat, cursive',
-              }}
-              onClick={e => e.stopPropagation()}
-            >
-              {/* Subtle glow orb */}
-              <div style={{
-                width: '80px', height: '80px',
-                borderRadius: '50%',
-                background: 'radial-gradient(circle, rgba(180,210,230,0.35) 0%, transparent 70%)',
-                margin: '0 auto 32px',
-                boxShadow: '0 0 40px rgba(180,210,230,0.2)',
-              }} />
-
-              <div style={{
-                fontSize: '28px',
-                lineHeight: 2.0,
-                color: '#f5ede0',
-                whiteSpace: 'pre-wrap',
-                letterSpacing: '0.5px',
-              }}>
-                {TIMO_JAR_NOTE}
-              </div>
-
-              <div style={{
-                marginTop: '48px',
-                fontSize: '13px',
-                color: 'rgba(245,237,224,0.25)',
-              }}>
-                tocca per chiudere
-              </div>
+      <Html fullscreen>
+        <ModalOverlay isOpen={activeModal === 'timo-jar'} onClose={closeModal} dark>
+          <div style={{ maxWidth: '340px', width: '88%', textAlign: 'center', padding: '0 20px' }}>
+            <div style={{
+              width: '80px', height: '80px', borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(180,210,230,0.35) 0%, transparent 70%)',
+              margin: '0 auto 36px',
+              boxShadow: '0 0 50px rgba(180,210,230,0.2)',
+            }} />
+            <div style={{
+              fontSize: '30px',
+              lineHeight: 2.1,
+              color: '#f5ede0',
+              whiteSpace: 'pre-wrap',
+              letterSpacing: '0.5px',
+              fontFamily: 'Caveat, cursive',
+            }}>
+              {TIMO_JAR_NOTE}
+            </div>
+            <div style={{ marginTop: '52px', fontSize: '11px', color: 'rgba(245,237,224,0.2)', letterSpacing: '1px', fontFamily: 'system-ui' }}>
+              tocca per chiudere
             </div>
           </div>
-        </Html>
-      )}
+        </ModalOverlay>
+      </Html>
     </group>
   )
 }
