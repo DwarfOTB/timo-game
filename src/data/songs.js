@@ -1,0 +1,43 @@
+export const SONGS = [
+  {
+    id: 's1',
+    title: 'Sei Acqua',
+    artist: 'Venerus',
+    clip: '/assets/audio/sei_acqua_clip.mp3',
+    unlocked: true,
+    note: 'la prima volta che te la ho mandata',
+  },
+  {
+    id: 's2',
+    title: 'Finché Non Sei Arrivata Tu',
+    artist: 'Emma',
+    clip: '/assets/audio/emma_clip.mp3',
+    unlocked: true,
+    note: null,
+  },
+  {
+    id: 's3',
+    title: 'Neo Romeo',
+    artist: 'Rusowsky',
+    clip: '/assets/audio/neo_romeo_clip.mp3',
+    unlocked: true,
+    note: null,
+  },
+  {
+    id: 's4',
+    title: 'Goofy',
+    artist: 'Rusowsky',
+    clip: '/assets/audio/goofy_clip.mp3',
+    unlocked: false,
+    unlocksAt: 'song-2',
+    note: null,
+  },
+  {
+    id: 's5',
+    title: 'Portami a Ballare in Primavera',
+    artist: 'Faccianuvola',
+    clip: '/assets/audio/portami_clip.mp3',
+    unlocked: true,
+    note: 'un giorno ti ci porto, promesso',
+  },
+]
