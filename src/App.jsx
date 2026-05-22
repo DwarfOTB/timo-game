@@ -21,6 +21,7 @@ import { useVisitSystem } from './hooks/useVisitSystem'
 function SceneContent() {
   return (
     <>
+      <color attach="background" args={['#f9f3ea']} />
       <Camera />
       <Lighting />
       <Room />
