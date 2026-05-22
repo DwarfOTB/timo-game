@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { useRoomStore } from '../store/useRoomStore'
-import { useAudio } from '../hooks/useAudio'
 import { SONGS } from '../data/songs'
 import { InteractiveObject } from './InteractiveObject'
 
@@ -11,35 +10,69 @@ const WALNUT_L = '#7a5344'
 const PLATTER  = '#2a1a0e'
 const NEEDLE   = '#c8b090'
 
+function SpotifyEmbed({ spotifyId }) {
+  if (!spotifyId) return (
+    <div style={{
+      padding: '14px 12px',
+      background: 'rgba(255,255,255,0.04)',
+      borderRadius: '10px',
+      fontSize: '13px',
+      color: '#8a7060',
+      textAlign: 'center',
+      marginTop: '8px',
+    }}>
+      ID Spotify non disponibile
+    </div>
+  )
+
+  return (
+    <div style={{ marginTop: '12px', borderRadius: '12px', overflow: 'hidden' }}>
+      <iframe
+        src={`https://open.spotify.com/embed/track/${spotifyId}?utm_source=generator&theme=0`}
+        width="100%"
+        height="80"
+        frameBorder="0"
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy"
+        style={{ display: 'block', borderRadius: '12px' }}
+      />
+    </div>
+  )
+}
+
 export function RecordPlayer({ position = [0, 0, 0] }) {
-  const platRef      = useRef()
-  const activeModal  = useRoomStore(s => s.activeModal)
-  const closeModal   = useRoomStore(s => s.closeModal)
-  const audioPlaying = useRoomStore(s => s.audioPlaying)
-  const setAudio     = useRoomStore(s => s.setAudio)
+  const platRef       = useRef()
+  const activeModal   = useRoomStore(s => s.activeModal)
+  const closeModal    = useRoomStore(s => s.closeModal)
+  const audioPlaying  = useRoomStore(s => s.audioPlaying)
+  const setAudio      = useRoomStore(s => s.setAudio)
   const unlockedItems = useRoomStore(s => s.unlockedItems)
-  const { playClip, stopAll } = useAudio()
-  const [loading, setLoading] = useState(null)
+  const [activeSong, setActiveSong] = useState(null)
 
   useFrame(() => {
     if (!platRef.current) return
     if (audioPlaying) platRef.current.rotation.y += 0.018
   })
 
-  const handlePlay = async (song) => {
-    if (audioPlaying === song.id) {
-      stopAll()
-      setAudio(null)
-      return
-    }
-    setLoading(song.id)
-    setAudio(song.id)
-    await playClip(song.clip)
-    setLoading(null)
-  }
-
   const isSongUnlocked = (song) =>
     song.unlocked || (song.unlocksAt && unlockedItems.includes(song.unlocksAt))
+
+  const handleSelect = (song) => {
+    if (!isSongUnlocked(song)) return
+    if (activeSong?.id === song.id) {
+      setActiveSong(null)
+      setAudio(null)
+    } else {
+      setActiveSong(song)
+      setAudio(song.id)
+    }
+  }
+
+  const handleClose = () => {
+    setActiveSong(null)
+    setAudio(null)
+    closeModal()
+  }
 
   return (
     <group position={position}>
@@ -86,7 +119,6 @@ export function RecordPlayer({ position = [0, 0, 0] }) {
         </mesh>
       </InteractiveObject>
 
-      {/* Modal */}
       {activeModal === 'record-player' && (
         <Html fullscreen>
           <div
@@ -97,79 +129,94 @@ export function RecordPlayer({ position = [0, 0, 0] }) {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               zIndex: 100,
             }}
-            onClick={closeModal}
+            onClick={handleClose}
           >
             <div
               style={{
                 background: '#2a1a0e',
                 border: '1px solid #5c3d2e',
                 borderRadius: '18px',
-                padding: '32px 28px 28px',
+                padding: '28px 24px 24px',
                 maxWidth: '420px', width: '92%',
                 fontFamily: 'system-ui, sans-serif',
                 color: '#f5ede0',
+                maxHeight: '90vh',
+                overflowY: 'auto',
               }}
               onClick={e => e.stopPropagation()}
             >
-              <h2 style={{ fontSize: '13px', fontWeight: 600, color: '#c8a87a', marginBottom: '22px', letterSpacing: '1px' }}>
+              <h2 style={{ fontSize: '13px', fontWeight: 600, color: '#c8a87a', marginBottom: '18px', letterSpacing: '1px' }}>
                 🎵 Giradischi
               </h2>
 
               {SONGS.map(song => {
                 const unlocked = isSongUnlocked(song)
-                const playing  = audioPlaying === song.id
+                const selected = activeSong?.id === song.id
                 return (
-                  <div
-                    key={song.id}
-                    style={{
-                      display: 'flex', alignItems: 'flex-start',
-                      padding: '12px 10px',
-                      borderRadius: '10px',
-                      marginBottom: '6px',
-                      background: playing ? 'rgba(217,79,61,0.18)' : 'rgba(255,255,255,0.04)',
-                      cursor: unlocked ? 'pointer' : 'default',
-                      transition: 'background 0.2s',
-                    }}
-                    onClick={() => unlocked && handlePlay(song)}
-                  >
-                    {/* Play/lock icon */}
-                    <div style={{
-                      width: '32px', height: '32px', borderRadius: '50%',
-                      background: playing ? '#d94f3d' : unlocked ? 'rgba(255,255,255,0.1)' : 'transparent',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontSize: '14px', flexShrink: 0, marginRight: '12px',
-                      color: playing ? '#fff' : '#8a7060',
-                      border: unlocked && !playing ? '1px solid rgba(255,255,255,0.15)' : 'none',
-                    }}>
-                      {loading === song.id ? '…' : unlocked ? (playing ? '■' : '▶') : '🔒'}
-                    </div>
-                    <div style={{ flex: 1 }}>
+                  <div key={song.id}>
+                    <div
+                      style={{
+                        display: 'flex', alignItems: 'flex-start',
+                        padding: '10px 10px',
+                        borderRadius: '10px',
+                        marginBottom: selected ? '0' : '6px',
+                        background: selected
+                          ? 'rgba(217,79,61,0.18)'
+                          : 'rgba(255,255,255,0.04)',
+                        cursor: unlocked ? 'pointer' : 'default',
+                        transition: 'background 0.2s',
+                        borderBottomLeftRadius: selected ? '0' : '10px',
+                        borderBottomRightRadius: selected ? '0' : '10px',
+                      }}
+                      onClick={() => handleSelect(song)}
+                    >
                       <div style={{
-                        fontSize: '15px', fontWeight: 600,
-                        color: unlocked ? '#f5ede0' : '#4a3520',
+                        width: '30px', height: '30px', borderRadius: '50%',
+                        background: selected ? '#d94f3d' : unlocked ? 'rgba(255,255,255,0.1)' : 'transparent',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        fontSize: '13px', flexShrink: 0, marginRight: '12px',
+                        color: selected ? '#fff' : '#8a7060',
+                        border: unlocked && !selected ? '1px solid rgba(255,255,255,0.15)' : 'none',
                       }}>
-                        {song.title}
+                        {unlocked ? (selected ? '■' : '▶') : '🔒'}
                       </div>
-                      <div style={{ fontSize: '12px', color: '#8a7060', marginTop: '2px' }}>
-                        {song.artist}
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: '14px', fontWeight: 600, color: unlocked ? '#f5ede0' : '#4a3520' }}>
+                          {song.title}
+                        </div>
+                        <div style={{ fontSize: '12px', color: '#8a7060', marginTop: '2px' }}>
+                          {song.artist}
+                        </div>
+                        {unlocked && song.note && (
+                          <div style={{ fontSize: '12px', color: '#c8a87a', fontStyle: 'italic', marginTop: '3px' }}>
+                            {song.note}
+                          </div>
+                        )}
+                        {!unlocked && (
+                          <div style={{ fontSize: '12px', color: '#4a3520', fontStyle: 'italic', marginTop: '3px' }}>
+                            ritorni ancora un po'...
+                          </div>
+                        )}
                       </div>
-                      {unlocked && song.note && (
-                        <div style={{ fontSize: '12px', color: '#c8a87a', fontStyle: 'italic', marginTop: '4px' }}>
-                          {song.note}
-                        </div>
-                      )}
-                      {!unlocked && (
-                        <div style={{ fontSize: '12px', color: '#4a3520', fontStyle: 'italic', marginTop: '4px' }}>
-                          ritorni ancora un po'...
-                        </div>
-                      )}
                     </div>
+
+                    {/* Spotify embed — inline under selected song */}
+                    {selected && (
+                      <div style={{
+                        background: 'rgba(217,79,61,0.10)',
+                        borderRadius: '0 0 10px 10px',
+                        padding: '0 10px 12px',
+                        marginBottom: '6px',
+                      }}>
+                        <SpotifyEmbed spotifyId={song.spotifyId} />
+                      </div>
+                    )}
                   </div>
                 )
               })}
 
-              <button onClick={closeModal} style={{
-                marginTop: '16px', width: '100%', padding: '10px',
+              <button onClick={handleClose} style={{
+                marginTop: '12px', width: '100%', padding: '10px',
                 background: 'transparent', border: '1px solid rgba(255,255,255,0.15)',
                 color: '#8a7060', borderRadius: '8px', cursor: 'pointer',
                 fontFamily: 'system-ui', fontSize: '12px',
