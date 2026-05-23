@@ -8,13 +8,17 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
   const [hovered, setHovered] = useState(false)
   const openModal = useRoomStore(s => s.openModal)
   const groupRef  = useRef()
+  const tRef      = useRef(0)
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!groupRef.current) return
+    tRef.current += delta
+    const floatOffset = Math.sin(tRef.current * 0.9) * 0.02
+    const targetY = hovered ? position[1] + 0.12 : position[1] + floatOffset
     groupRef.current.position.y = THREE.MathUtils.lerp(
       groupRef.current.position.y,
-      hovered ? position[1] + 0.12 : position[1],
-      0.08
+      targetY,
+      0.06
     )
   })
 
@@ -27,6 +31,17 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
       onClick={(e) => { e.stopPropagation(); openModal(objectId) }}
     >
       {children}
+
+      {!hovered && (
+        <Html position={[0, 0.88, 0]} center zIndexRange={[2, 1]} style={{ pointerEvents: 'none' }}>
+          <div className="click-hint" style={{
+            pointerEvents: 'none', userSelect: 'none',
+            color: 'rgba(196,48,110,0.8)',
+            fontSize: '13px',
+            textShadow: '0 0 8px rgba(196,48,110,0.6)',
+          }}>✦</div>
+        </Html>
+      )}
 
       {hovered && name && (
         <Html position={[0, 0.82, 0]} center zIndexRange={[1, 1]}>

@@ -59,8 +59,8 @@ export function Calendar({ position = [0, 0, 0] }) {
       </InteractiveObject>
 
       {/* Html label is a SIBLING of InteractiveObject — not inside the raycast group */}
-      <Html transform position={[0, 0, 0.025]} style={{ width: '144px', pointerEvents: 'none' }}>
-        <div style={{ width: '144px', fontFamily: 'system-ui', fontSize: '9px', color: '#3d2b1f', userSelect: 'none' }}>
+      <Html transform pointerEvents="none" zIndexRange={[10, 0]} position={[0, 0, 0.025]} style={{ width: '144px', pointerEvents: 'none' }}>
+        <div className="cal-no-events" style={{ width: '144px', fontFamily: 'system-ui', fontSize: '9px', color: '#3d2b1f', userSelect: 'none', pointerEvents: 'none' }}>
           <div style={{ background: '#d94f3d', color: '#fff', textAlign: 'center', padding: '5px 0 4px', fontWeight: 700, fontSize: '10px', letterSpacing: '0.5px' }}>
             APRILE 2026
           </div>

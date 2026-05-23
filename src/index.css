@@ -96,3 +96,17 @@ html, body, #root {
 /* Modal scroll container — hide scrollbar */
 .modal-scroll { scrollbar-width: none; -ms-overflow-style: none; }
 .modal-scroll::-webkit-scrollbar { display: none; }
+
+/* Calendar label — all elements transparent to pointer events */
+.cal-no-events, .cal-no-events * { pointer-events: none !important; }
+
+/* Interactive object sparkle hint */
+@keyframes hint-pulse {
+  0%, 100% { opacity: 0.4; transform: translateY(0px) scale(0.92); }
+  50%       { opacity: 0.9; transform: translateY(-5px) scale(1.05); }
+}
+.click-hint {
+  animation: hint-pulse 2.4s ease-in-out infinite;
+  pointer-events: none;
+  user-select: none;
+}
