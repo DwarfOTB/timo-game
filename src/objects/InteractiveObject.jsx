@@ -4,22 +4,43 @@ import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useRoomStore } from '../store/useRoomStore'
 
-export function InteractiveObject({ children, objectId, position = [0, 0, 0], name }) {
+function makeGlowTexture() {
+  const canvas = document.createElement('canvas')
+  canvas.width = 128
+  canvas.height = 128
+  const ctx = canvas.getContext('2d')
+  const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64)
+  g.addColorStop(0,   'rgba(196,48,110,0.38)')
+  g.addColorStop(0.45,'rgba(196,48,110,0.14)')
+  g.addColorStop(1,   'rgba(196,48,110,0)')
+  ctx.fillStyle = g
+  ctx.fillRect(0, 0, 128, 128)
+  return new THREE.CanvasTexture(canvas)
+}
+
+// Module-level singleton — one texture shared across all instances
+const GLOW_TEX = makeGlowTexture()
+
+export function InteractiveObject({ children, objectId, position = [0, 0, 0], name, glowScale = 0.7 }) {
   const [hovered, setHovered] = useState(false)
   const openModal = useRoomStore(s => s.openModal)
   const groupRef  = useRef()
+  const glowRef   = useRef()
   const tRef      = useRef(0)
 
   useFrame((_, delta) => {
     if (!groupRef.current) return
     tRef.current += delta
-    const floatOffset = Math.sin(tRef.current * 0.9) * 0.02
-    const targetY = hovered ? position[1] + 0.12 : position[1] + floatOffset
     groupRef.current.position.y = THREE.MathUtils.lerp(
       groupRef.current.position.y,
-      targetY,
-      0.06
+      hovered ? position[1] + 0.12 : position[1],
+      0.08
     )
+    if (glowRef.current) {
+      const base  = hovered ? 0.72 : 0.4
+      const pulse = Math.sin(tRef.current * 1.8) * 0.14
+      glowRef.current.material.opacity = Math.max(0, Math.min(1, base + pulse))
+    }
   })
 
   return (
@@ -32,24 +53,13 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
     >
       {children}
 
-      {/* Always-visible sparkle — communicates clickability on touch/mobile too */}
-      <Html position={[0, 0.88, 0]} center zIndexRange={[2, 1]} style={{ pointerEvents: 'none' }}>
-        <div
-          className="click-hint"
-          style={{
-            pointerEvents: 'none', userSelect: 'none',
-            color: hovered ? 'rgba(196,48,110,1)' : 'rgba(196,48,110,0.75)',
-            fontSize: hovered ? '16px' : '13px',
-            textShadow: hovered
-              ? '0 0 12px rgba(196,48,110,0.9)'
-              : '0 0 6px rgba(196,48,110,0.5)',
-            transition: 'font-size 0.2s, color 0.2s, text-shadow 0.2s',
-          }}
-        >✦</div>
-      </Html>
+      {/* Glow sprite — always faces camera, always visible, no DOM */}
+      <sprite ref={glowRef} scale={[glowScale, glowScale, 1]}>
+        <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} />
+      </sprite>
 
       {hovered && name && (
-        <Html position={[0, 0.68, 0]} center zIndexRange={[1, 1]}>
+        <Html position={[0, 0.82, 0]} center zIndexRange={[1, 1]}>
           <div style={{
             background: 'rgba(22,13,6,0.88)',
             color: 'rgba(245,237,224,0.92)',
