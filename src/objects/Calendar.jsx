@@ -56,38 +56,35 @@ export function Calendar({ position = [0, 0, 0] }) {
           <boxGeometry args={[0.72, 0.20, 0.01]} />
           <meshStandardMaterial color="#d94f3d" roughness={0.8} />
         </mesh>
-
-        <Html
-          transform
-          position={[0, 0, 0.025]}
-          style={{ width: '144px', pointerEvents: 'none' }}
-        >
-          <div style={{ width: '144px', fontFamily: 'system-ui', fontSize: '9px', color: '#3d2b1f', userSelect: 'none' }}>
-            <div style={{ background: '#d94f3d', color: '#fff', textAlign: 'center', padding: '5px 0 4px', fontWeight: 700, fontSize: '10px', letterSpacing: '0.5px' }}>
-              APRILE 2026
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1px', padding: '4px 4px 2px', background: '#f5ede0' }}>
-              {['L','M','M','G','V','S','D'].map((d, i) => (
-                <div key={i} style={{ textAlign: 'center', fontWeight: 700, color: '#8a7060', fontSize: '7px', paddingBottom: '2px' }}>{d}</div>
-              ))}
-              {Array.from({ length: OFFSET }).map((_, i) => <div key={'e' + i} />)}
-              {DAYS.map(d => (
-                <div key={d} style={{
-                  textAlign: 'center', lineHeight: '14px', borderRadius: '50%',
-                  background: d === 13 ? '#d94f3d' : 'transparent',
-                  color: d === 13 ? '#fff' : '#3d2b1f',
-                  fontWeight: d === 13 ? 700 : 400,
-                }}>
-                  {d}
-                </div>
-              ))}
-            </div>
-            <div style={{ textAlign: 'center', fontSize: '8px', color: '#d94f3d', padding: '2px 0 3px', fontStyle: 'italic' }}>
-              quel giorno li
-            </div>
-          </div>
-        </Html>
       </InteractiveObject>
+
+      {/* Html label is a SIBLING of InteractiveObject — not inside the raycast group */}
+      <Html transform position={[0, 0, 0.025]} style={{ width: '144px', pointerEvents: 'none' }}>
+        <div style={{ width: '144px', fontFamily: 'system-ui', fontSize: '9px', color: '#3d2b1f', userSelect: 'none' }}>
+          <div style={{ background: '#d94f3d', color: '#fff', textAlign: 'center', padding: '5px 0 4px', fontWeight: 700, fontSize: '10px', letterSpacing: '0.5px' }}>
+            APRILE 2026
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1px', padding: '4px 4px 2px', background: '#f5ede0' }}>
+            {['L','M','M','G','V','S','D'].map((d, i) => (
+              <div key={i} style={{ textAlign: 'center', fontWeight: 700, color: '#8a7060', fontSize: '7px', paddingBottom: '2px' }}>{d}</div>
+            ))}
+            {Array.from({ length: OFFSET }).map((_, i) => <div key={'e' + i} />)}
+            {DAYS.map(d => (
+              <div key={d} style={{
+                textAlign: 'center', lineHeight: '14px', borderRadius: '50%',
+                background: d === 13 ? '#d94f3d' : 'transparent',
+                color: d === 13 ? '#fff' : '#3d2b1f',
+                fontWeight: d === 13 ? 700 : 400,
+              }}>
+                {d}
+              </div>
+            ))}
+          </div>
+          <div style={{ textAlign: 'center', fontSize: '8px', color: '#d94f3d', padding: '2px 0 3px', fontStyle: 'italic' }}>
+            quel giorno li
+          </div>
+        </div>
+      </Html>
 
       <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'calendar'} onClose={closeModal}>
