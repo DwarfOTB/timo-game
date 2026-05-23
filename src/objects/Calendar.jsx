@@ -1,10 +1,11 @@
+import { useMemo } from 'react'
 import { Html } from '@react-three/drei'
+import * as THREE from 'three'
 import { useRoomStore } from '../store/useRoomStore'
 import { ModalOverlay } from '../ui/ModalOverlay'
 import { InteractiveObject } from './InteractiveObject'
 
 // April 2026: April 1 = Wednesday → Mon-based offset = 2
-const DAYS   = Array.from({ length: 30 }, (_, i) => i + 1)
 const OFFSET = 2
 
 const SONG_QUOTES = [
@@ -15,13 +16,82 @@ const SONG_QUOTES = [
   '"portami a ballare in primavera" — Faccianuvola',
 ]
 
+function makeCalendarTexture() {
+  const W = 288, H = 352
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')
+
+  ctx.fillStyle = '#f5ede0'
+  ctx.fillRect(0, 0, W, H)
+
+  // Red header
+  const headerH = 72
+  ctx.fillStyle = '#d94f3d'
+  ctx.fillRect(0, 0, W, headerH)
+  ctx.fillStyle = '#ffffff'
+  ctx.font = 'bold 20px system-ui, sans-serif'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('APRILE 2026', W / 2, headerH / 2)
+
+  // Day labels
+  const DAY_LABELS = ['L', 'M', 'M', 'G', 'V', 'S', 'D']
+  const colW = W / 7
+  const labelY = headerH + 22
+  ctx.fillStyle = '#8a7060'
+  ctx.font = 'bold 14px system-ui, sans-serif'
+  DAY_LABELS.forEach((d, i) => {
+    ctx.fillText(d, colW * i + colW / 2, labelY)
+  })
+
+  // Day numbers
+  const gridStartY = labelY + 22
+  const rowH = (H - gridStartY - 24) / 5
+
+  for (let d = 1; d <= 30; d++) {
+    const idx = d - 1 + OFFSET
+    const col = idx % 7
+    const row = Math.floor(idx / 7)
+    const x = colW * col + colW / 2
+    const y = gridStartY + row * rowH + rowH / 2
+
+    if (d === 13) {
+      ctx.fillStyle = '#d94f3d'
+      ctx.beginPath()
+      ctx.arc(x, y, 13, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#ffffff'
+      ctx.font = 'bold 15px system-ui, sans-serif'
+    } else {
+      ctx.fillStyle = '#3d2b1f'
+      ctx.font = '14px system-ui, sans-serif'
+    }
+    ctx.fillText(String(d), x, y)
+  }
+
+  // Footer
+  ctx.fillStyle = '#d94f3d'
+  ctx.font = 'italic 12px system-ui, sans-serif'
+  ctx.fillText('quel giorno li', W / 2, H - 9)
+
+  return canvas
+}
+
 export function Calendar({ position = [0, 0, 0] }) {
-  const days         = useRoomStore(s => s.getDaysSinceApril13())
-  const dSinceStart  = useRoomStore(s => s.getDaysSinceStart())
-  const activeModal  = useRoomStore(s => s.activeModal)
-  const closeModal   = useRoomStore(s => s.closeModal)
+  const days        = useRoomStore(s => s.getDaysSinceApril13())
+  const dSinceStart = useRoomStore(s => s.getDaysSinceStart())
+  const activeModal = useRoomStore(s => s.activeModal)
+  const closeModal  = useRoomStore(s => s.closeModal)
 
   const quote = SONG_QUOTES[Math.abs(dSinceStart) % SONG_QUOTES.length]
+
+  const calTexture = useMemo(() => {
+    const tex = new THREE.CanvasTexture(makeCalendarTexture())
+    tex.needsUpdate = true
+    return tex
+  }, [])
 
   return (
     <group position={position}>
@@ -31,31 +101,12 @@ export function Calendar({ position = [0, 0, 0] }) {
           <boxGeometry args={[0.72, 0.88, 0.04]} />
           <meshStandardMaterial color="#f5ede0" roughness={0.9} />
         </mesh>
-        {/* Red header bar */}
-        <mesh position={[0, 0.34, 0.021]}>
-          <boxGeometry args={[0.72, 0.20, 0.01]} />
-          <meshStandardMaterial color="#d94f3d" roughness={0.8} />
-        </mesh>
 
-        <Html transform position={[0, 0, 0.025]} style={{ width: '144px', pointerEvents: 'none' }}>
-          <div style={{ width: '144px', fontFamily: 'system-ui', fontSize: '9px', color: '#3d2b1f', userSelect: 'none' }}>
-            <div style={{ background: '#d94f3d', color: '#fff', textAlign: 'center', padding: '5px 0 4px', fontWeight: 700, fontSize: '10px', letterSpacing: '0.5px' }}>
-              APRILE 2026
-            </div>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1px', padding: '4px 4px 2px', background: '#f5ede0' }}>
-              {['L','M','M','G','V','S','D'].map((d, i) => (
-                <div key={i} style={{ textAlign: 'center', fontWeight: 700, color: '#8a7060', fontSize: '7px', paddingBottom: '2px' }}>{d}</div>
-              ))}
-              {Array.from({ length: OFFSET }).map((_, i) => <div key={'e' + i} />)}
-              {DAYS.map(d => (
-                <div key={d} style={{ textAlign: 'center', lineHeight: '14px', borderRadius: '50%', background: d === 13 ? '#d94f3d' : 'transparent', color: d === 13 ? '#fff' : '#3d2b1f', fontWeight: d === 13 ? 700 : 400 }}>
-                  {d}
-                </div>
-              ))}
-            </div>
-            <div style={{ textAlign: 'center', fontSize: '8px', color: '#d94f3d', padding: '2px 0 3px', fontStyle: 'italic' }}>❤️ quel giorno lì</div>
-          </div>
-        </Html>
+        {/* Calendar face as texture — depth-tested, no DOM overlay */}
+        <mesh position={[0, 0, 0.022]}>
+          <planeGeometry args={[0.70, 0.86]} />
+          <meshStandardMaterial map={calTexture} roughness={0.85} />
+        </mesh>
       </InteractiveObject>
 
       <Html fullscreen style={{ pointerEvents: 'none' }}>
