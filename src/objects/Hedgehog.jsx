@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { useRoomStore } from '../store/useRoomStore'
 import { ModalOverlay } from '../ui/ModalOverlay'
+import { GLOW_TEX } from '../utils/glowTexture'
 
 const BODY_COLOR  = '#8b6347'
 const SPINE_COLOR = '#5a3d28'
@@ -21,16 +22,25 @@ const SPINES = [
 ]
 
 export function Hedgehog({ position = [0, 0, 0] }) {
-  const groupRef  = useRef()
+  const groupRef   = useRef()
+  const glowRef    = useRef()
+  const tRef       = useRef(0)
+  const hoveredRef = useRef(false)
   const [hovered, setHovered] = useState(false)
   const activeModal = useRoomStore(s => s.activeModal)
   const openModal   = useRoomStore(s => s.openModal)
   const closeModal  = useRoomStore(s => s.closeModal)
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     if (!groupRef.current) return
+    tRef.current += delta
     const t = clock.getElapsedTime()
     groupRef.current.position.y = position[1] + Math.sin(t * Math.PI) * 0.06
+    if (glowRef.current) {
+      const base  = hoveredRef.current ? 0.72 : 0.40
+      const pulse = Math.sin(tRef.current * 1.8) * 0.14
+      glowRef.current.material.opacity = Math.max(0, Math.min(1, base + pulse))
+    }
   })
 
   return (
@@ -38,8 +48,8 @@ export function Hedgehog({ position = [0, 0, 0] }) {
       <group
         ref={groupRef}
         position={position}
-        onPointerEnter={() => { setHovered(true);  document.body.style.cursor = 'pointer' }}
-        onPointerLeave={() => { setHovered(false); document.body.style.cursor = 'default' }}
+        onPointerEnter={() => { hoveredRef.current = true;  setHovered(true);  document.body.style.cursor = 'pointer' }}
+        onPointerLeave={() => { hoveredRef.current = false; setHovered(false); document.body.style.cursor = 'default' }}
         onClick={(e) => { e.stopPropagation(); openModal('hedgehog') }}
       >
         <mesh scale={[1, 0.82, 0.88]} castShadow>
@@ -74,6 +84,9 @@ export function Hedgehog({ position = [0, 0, 0] }) {
             <meshStandardMaterial color="#d4a07a" transparent opacity={0.25} emissive="#d4a07a" emissiveIntensity={0.4} />
           </mesh>
         )}
+        <sprite ref={glowRef} scale={[0.65, 0.65, 1]}>
+          <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} />
+        </sprite>
       </group>
 
       <Html fullscreen style={{ pointerEvents: 'none' }}>

@@ -41,7 +41,7 @@ export function RecordPlayer({ position = [0, 0, 0] }) {
 
   useFrame(() => {
     if (!platRef.current) return
-    if (audioPlaying) platRef.current.rotation.y += 0.018
+    platRef.current.rotation.y += audioPlaying ? 0.018 : 0.004
   })
 
   const isSongUnlocked = (song) =>
@@ -67,7 +67,7 @@ export function RecordPlayer({ position = [0, 0, 0] }) {
         <meshStandardMaterial color={WALNUT} roughness={0.8} />
       </mesh>
 
-      <InteractiveObject objectId="record-player" name="giradischi" position={[0, 0.44, 0]}>
+      <InteractiveObject objectId="record-player" name="giradischi" position={[0, 0.44, 0]} float={false} glowScale={0.9}>
         <mesh castShadow>
           <boxGeometry args={[0.78, 0.12, 0.62]} />
           <meshStandardMaterial color={WALNUT} roughness={0.85} />

@@ -32,8 +32,8 @@ function Polaroid({ photo, index, onSelect, showCaption }) {
         <meshStandardMaterial
           color={hov ? '#f5f0e8' : '#ffffff'}
           roughness={0.7}
-          emissive={hov ? '#ffe8d0' : '#000000'}
-          emissiveIntensity={hov ? 0.1 : 0}
+          emissive="#c4306e"
+          emissiveIntensity={hov ? 0.18 : 0.055}
         />
       </mesh>
       <mesh position={[0, -0.33, 0]}>

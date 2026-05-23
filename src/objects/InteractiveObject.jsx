@@ -3,41 +3,28 @@ import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import * as THREE from 'three'
 import { useRoomStore } from '../store/useRoomStore'
+import { GLOW_TEX } from '../utils/glowTexture'
 
-function makeGlowTexture() {
-  const canvas = document.createElement('canvas')
-  canvas.width = 128
-  canvas.height = 128
-  const ctx = canvas.getContext('2d')
-  const g = ctx.createRadialGradient(64, 64, 0, 64, 64, 64)
-  g.addColorStop(0,   'rgba(196,48,110,0.38)')
-  g.addColorStop(0.45,'rgba(196,48,110,0.14)')
-  g.addColorStop(1,   'rgba(196,48,110,0)')
-  ctx.fillStyle = g
-  ctx.fillRect(0, 0, 128, 128)
-  return new THREE.CanvasTexture(canvas)
-}
-
-// Module-level singleton — one texture shared across all instances
-const GLOW_TEX = makeGlowTexture()
-
-export function InteractiveObject({ children, objectId, position = [0, 0, 0], name, glowScale = 0.7 }) {
+export function InteractiveObject({ children, objectId, position = [0, 0, 0], name, glowScale = 0.7, float = true }) {
   const [hovered, setHovered] = useState(false)
-  const openModal = useRoomStore(s => s.openModal)
-  const groupRef  = useRef()
-  const glowRef   = useRef()
-  const tRef      = useRef(0)
+  const openModal  = useRoomStore(s => s.openModal)
+  const groupRef   = useRef()
+  const glowRef    = useRef()
+  const tRef       = useRef(0)
+  const hoveredRef = useRef(false)
 
   useFrame((_, delta) => {
     if (!groupRef.current) return
     tRef.current += delta
+    const floatOffset = float ? Math.sin(tRef.current * 0.9) * 0.022 : 0
+    const targetY = hoveredRef.current ? position[1] + 0.12 : position[1] + floatOffset
     groupRef.current.position.y = THREE.MathUtils.lerp(
       groupRef.current.position.y,
-      hovered ? position[1] + 0.12 : position[1],
-      0.08
+      targetY,
+      0.07
     )
     if (glowRef.current) {
-      const base  = hovered ? 0.72 : 0.4
+      const base  = hoveredRef.current ? 0.72 : 0.40
       const pulse = Math.sin(tRef.current * 1.8) * 0.14
       glowRef.current.material.opacity = Math.max(0, Math.min(1, base + pulse))
     }
@@ -47,13 +34,12 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
     <group
       ref={groupRef}
       position={position}
-      onPointerEnter={() => { setHovered(true);  document.body.style.cursor = 'pointer' }}
-      onPointerLeave={() => { setHovered(false); document.body.style.cursor = 'default' }}
+      onPointerEnter={() => { hoveredRef.current = true;  setHovered(true);  document.body.style.cursor = 'pointer' }}
+      onPointerLeave={() => { hoveredRef.current = false; setHovered(false); document.body.style.cursor = 'default' }}
       onClick={(e) => { e.stopPropagation(); openModal(objectId) }}
     >
       {children}
 
-      {/* Glow sprite — always faces camera, always visible, no DOM */}
       <sprite ref={glowRef} scale={[glowScale, glowScale, 1]}>
         <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} />
       </sprite>

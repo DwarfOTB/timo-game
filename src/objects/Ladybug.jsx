@@ -3,6 +3,7 @@ import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { useRoomStore } from '../store/useRoomStore'
 import { ModalOverlay } from '../ui/ModalOverlay'
+import { GLOW_TEX } from '../utils/glowTexture'
 
 const BODY_COLOR = '#d94f3d'
 const HEAD_COLOR = '#1a1a1a'
@@ -16,17 +17,26 @@ const SPOTS = [
 ]
 
 export function Ladybug({ position = [0, 0, 0] }) {
-  const groupRef  = useRef()
+  const groupRef   = useRef()
+  const glowRef    = useRef()
+  const tRef       = useRef(0)
+  const hoveredRef = useRef(false)
   const [hovered, setHovered] = useState(false)
   const activeModal = useRoomStore(s => s.activeModal)
   const openModal   = useRoomStore(s => s.openModal)
   const closeModal  = useRoomStore(s => s.closeModal)
 
-  useFrame(({ clock }) => {
+  useFrame(({ clock }, delta) => {
     if (!groupRef.current) return
+    tRef.current += delta
     const t = clock.getElapsedTime()
     groupRef.current.rotation.z = Math.sin(t * (Math.PI * 2 / 3) + 1.5) * 0.12
     groupRef.current.position.y = position[1] + Math.sin(t * (Math.PI * 2 / 3) + 0.8) * 0.04
+    if (glowRef.current) {
+      const base  = hoveredRef.current ? 0.72 : 0.40
+      const pulse = Math.sin(tRef.current * 1.8) * 0.14
+      glowRef.current.material.opacity = Math.max(0, Math.min(1, base + pulse))
+    }
   })
 
   return (
@@ -34,8 +44,8 @@ export function Ladybug({ position = [0, 0, 0] }) {
       <group
         ref={groupRef}
         position={position}
-        onPointerEnter={() => { setHovered(true);  document.body.style.cursor = 'pointer' }}
-        onPointerLeave={() => { setHovered(false); document.body.style.cursor = 'default' }}
+        onPointerEnter={() => { hoveredRef.current = true;  setHovered(true);  document.body.style.cursor = 'pointer' }}
+        onPointerLeave={() => { hoveredRef.current = false; setHovered(false); document.body.style.cursor = 'default' }}
         onClick={(e) => { e.stopPropagation(); openModal('ladybug') }}
       >
         <mesh scale={[1, 0.65, 1]} castShadow>
@@ -70,6 +80,9 @@ export function Ladybug({ position = [0, 0, 0] }) {
             <meshStandardMaterial color="#f4826f" transparent opacity={0.28} emissive="#f4826f" emissiveIntensity={0.5} />
           </mesh>
         )}
+        <sprite ref={glowRef} scale={[0.6, 0.6, 1]}>
+          <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} />
+        </sprite>
       </group>
 
       <Html fullscreen style={{ pointerEvents: 'none' }}>
