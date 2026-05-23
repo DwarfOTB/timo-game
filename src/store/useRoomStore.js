@@ -12,6 +12,7 @@ export const useRoomStore = create(
       firstOpenDate: null,
       unlockedItems: [],
       dailyActions: {},
+      calendarEvents: [], // { id, date: 'YYYY-MM-DD', text }
 
       // Session state
       activeModal: null,
@@ -44,6 +45,13 @@ export const useRoomStore = create(
       setDailyAction: (actionKey) => set(state => ({
         dailyActions: { ...state.dailyActions, [actionKey]: new Date().toISOString() },
       })),
+      addCalendarEvent: (date, text) => set(state => ({
+        calendarEvents: [...state.calendarEvents, { id: Date.now(), date, text }]
+          .sort((a, b) => a.date.localeCompare(b.date)),
+      })),
+      removeCalendarEvent: (id) => set(state => ({
+        calendarEvents: state.calendarEvents.filter(e => e.id !== id),
+      })),
       openModal:  (objectId) => set({ activeModal: objectId }),
       closeModal: ()         => set({ activeModal: null }),
       setAudio:   (songId)   => set({ audioPlaying: songId }),
@@ -54,8 +62,9 @@ export const useRoomStore = create(
         visitCount:     state.visitCount,
         lastVisitDate:  state.lastVisitDate,
         firstOpenDate:  state.firstOpenDate,
-        unlockedItems:  state.unlockedItems,
-        dailyActions:   state.dailyActions,
+        unlockedItems:    state.unlockedItems,
+        dailyActions:     state.dailyActions,
+        calendarEvents:   state.calendarEvents,
       }),
     }
   )
