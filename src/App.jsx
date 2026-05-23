@@ -16,6 +16,7 @@ import { HUD }          from './ui/HUD'
 import { FirstVisit }   from './ui/FirstVisit'
 import { UnlockToast }  from './ui/UnlockToast'
 import { EasterEgg }    from './ui/EasterEgg'
+import { RotatePrompt } from './ui/RotatePrompt'
 import { useVisitSystem } from './hooks/useVisitSystem'
 
 function SceneContent() {
@@ -71,6 +72,7 @@ export default function App() {
       <FirstVisit />
       <UnlockToast />
       <EasterEgg />
+      <RotatePrompt />
     </div>
   )
 }
