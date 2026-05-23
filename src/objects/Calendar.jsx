@@ -57,11 +57,9 @@ export function Calendar({ position = [0, 0, 0] }) {
           <meshStandardMaterial color="#d94f3d" roughness={0.8} />
         </mesh>
 
-        {/* Calendar grid — zIndexRange [0,0] stays below FirstVisit (z200) and modals (z100) */}
         <Html
           transform
           position={[0, 0, 0.025]}
-          zIndexRange={[0, 0]}
           style={{ width: '144px', pointerEvents: 'none' }}
         >
           <div style={{ width: '144px', fontFamily: 'system-ui', fontSize: '9px', color: '#3d2b1f', userSelect: 'none' }}>
