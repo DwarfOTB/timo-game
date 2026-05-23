@@ -1,5 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect } from 'react'
+import { createPortal } from 'react-dom'
 
 const SPRING = { duration: 0.32, ease: [0.16, 1, 0.3, 1] }
 
@@ -11,7 +12,7 @@ export function ModalOverlay({ isOpen, onClose, dark = false, children }) {
     return () => window.removeEventListener('keydown', fn)
   }, [isOpen, onClose])
 
-  return (
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <motion.div
@@ -78,6 +79,7 @@ export function ModalOverlay({ isOpen, onClose, dark = false, children }) {
           </motion.div>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   )
 }
