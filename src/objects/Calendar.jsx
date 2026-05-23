@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useMemo } from 'react'
+import * as THREE from 'three'
 import { Html } from '@react-three/drei'
 import { useRoomStore } from '../store/useRoomStore'
 import { ModalOverlay } from '../ui/ModalOverlay'
@@ -22,6 +23,70 @@ function fmtDate(dateStr) {
   return `${parseInt(d)} ${months[parseInt(m) - 1]} ${y}`
 }
 
+function makeCalendarTexture() {
+  const W = 288, H = 352
+  const canvas = document.createElement('canvas')
+  canvas.width = W
+  canvas.height = H
+  const ctx = canvas.getContext('2d')
+
+  ctx.fillStyle = '#f5ede0'
+  ctx.fillRect(0, 0, W, H)
+
+  // Red header
+  ctx.fillStyle = '#d94f3d'
+  ctx.fillRect(0, 0, W, 68)
+  ctx.fillStyle = '#ffffff'
+  ctx.font = 'bold 20px system-ui, -apple-system, sans-serif'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('APRILE 2026', W / 2, 34)
+
+  // Day header row
+  const days = ['L','M','M','G','V','S','D']
+  const colW = W / 7
+  ctx.fillStyle = '#8a7060'
+  ctx.font = 'bold 15px system-ui, -apple-system, sans-serif'
+  days.forEach((d, i) => {
+    ctx.fillText(d, colW * i + colW / 2, 84)
+  })
+
+  // Day numbers
+  for (let d = 1; d <= 30; d++) {
+    const idx = d - 1 + OFFSET
+    const col = idx % 7
+    const row = Math.floor(idx / 7)
+    const x = colW * col + colW / 2
+    const y = 110 + row * 40
+
+    if (d === 13) {
+      ctx.fillStyle = '#d94f3d'
+      ctx.beginPath()
+      ctx.arc(x, y, 15, 0, Math.PI * 2)
+      ctx.fill()
+      ctx.fillStyle = '#ffffff'
+      ctx.font = 'bold 15px system-ui, -apple-system, sans-serif'
+    } else {
+      ctx.fillStyle = '#3d2b1f'
+      ctx.font = '14px system-ui, -apple-system, sans-serif'
+    }
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+    ctx.fillText(d, x, y)
+  }
+
+  // Footer
+  ctx.fillStyle = '#d94f3d'
+  ctx.font = 'italic 13px system-ui, -apple-system, sans-serif'
+  ctx.textAlign = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.fillText('quel giorno lì', W / 2, H - 18)
+
+  const tex = new THREE.CanvasTexture(canvas)
+  tex.needsUpdate = true
+  return tex
+}
+
 export function Calendar({ position = [0, 0, 0] }) {
   const days            = useRoomStore(s => s.getDaysSinceApril13())
   const dSinceStart     = useRoomStore(s => s.getDaysSinceStart())
@@ -34,7 +99,8 @@ export function Calendar({ position = [0, 0, 0] }) {
   const [newDate, setNewDate] = useState('')
   const [newText, setNewText] = useState('')
 
-  const quote = SONG_QUOTES[Math.abs(dSinceStart) % SONG_QUOTES.length]
+  const quote   = SONG_QUOTES[Math.abs(dSinceStart) % SONG_QUOTES.length]
+  const texture = useMemo(() => makeCalendarTexture(), [])
 
   const handleAdd = () => {
     if (!newDate || !newText.trim()) return
@@ -51,40 +117,12 @@ export function Calendar({ position = [0, 0, 0] }) {
           <boxGeometry args={[0.72, 0.88, 0.04]} />
           <meshStandardMaterial color="#f5ede0" roughness={0.9} />
         </mesh>
-        {/* Red header bar */}
-        <mesh position={[0, 0.34, 0.021]}>
-          <boxGeometry args={[0.72, 0.20, 0.01]} />
-          <meshStandardMaterial color="#d94f3d" roughness={0.8} />
+        {/* Calendar face — pure 3D, no HTML, no click blocking */}
+        <mesh position={[0, 0, 0.021]}>
+          <planeGeometry args={[0.72, 0.88]} />
+          <meshBasicMaterial map={texture} />
         </mesh>
       </InteractiveObject>
-
-      {/* Html label is a SIBLING of InteractiveObject — not inside the raycast group */}
-      <Html transform pointerEvents="none" zIndexRange={[10, 0]} position={[0, 0, 0.025]} style={{ width: '144px', pointerEvents: 'none' }}>
-        <div className="cal-no-events" style={{ width: '144px', fontFamily: 'system-ui', fontSize: '9px', color: '#3d2b1f', userSelect: 'none', pointerEvents: 'none' }}>
-          <div style={{ background: '#d94f3d', color: '#fff', textAlign: 'center', padding: '5px 0 4px', fontWeight: 700, fontSize: '10px', letterSpacing: '0.5px' }}>
-            APRILE 2026
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: '1px', padding: '4px 4px 2px', background: '#f5ede0' }}>
-            {['L','M','M','G','V','S','D'].map((d, i) => (
-              <div key={i} style={{ textAlign: 'center', fontWeight: 700, color: '#8a7060', fontSize: '7px', paddingBottom: '2px' }}>{d}</div>
-            ))}
-            {Array.from({ length: OFFSET }).map((_, i) => <div key={'e' + i} />)}
-            {DAYS.map(d => (
-              <div key={d} style={{
-                textAlign: 'center', lineHeight: '14px', borderRadius: '50%',
-                background: d === 13 ? '#d94f3d' : 'transparent',
-                color: d === 13 ? '#fff' : '#3d2b1f',
-                fontWeight: d === 13 ? 700 : 400,
-              }}>
-                {d}
-              </div>
-            ))}
-          </div>
-          <div style={{ textAlign: 'center', fontSize: '8px', color: '#d94f3d', padding: '2px 0 3px', fontStyle: 'italic' }}>
-            quel giorno li
-          </div>
-        </div>
-      </Html>
 
       <Html fullscreen style={{ pointerEvents: 'none' }}>
         <ModalOverlay isOpen={activeModal === 'calendar'} onClose={closeModal}>
@@ -118,7 +156,6 @@ export function Calendar({ position = [0, 0, 0] }) {
                 I nostri giorni
               </div>
 
-              {/* Event list */}
               {calendarEvents.length > 0 && (
                 <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px', maxHeight: '160px', overflowY: 'auto' }} className="modal-scroll">
                   {calendarEvents.map(ev => (
@@ -142,21 +179,15 @@ export function Calendar({ position = [0, 0, 0] }) {
                 </div>
               )}
 
-              {/* Add event form */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <input
                   type="date"
                   value={newDate}
                   onChange={e => setNewDate(e.target.value)}
                   style={{
-                    padding: '8px 12px',
-                    border: '1px solid #e8d5b0',
-                    borderRadius: '10px',
-                    fontSize: '13px',
-                    color: '#3d2b1f',
-                    background: '#fffaf6',
-                    outline: 'none',
-                    fontFamily: 'inherit',
+                    padding: '8px 12px', border: '1px solid #e8d5b0',
+                    borderRadius: '10px', fontSize: '13px', color: '#3d2b1f',
+                    background: '#fffaf6', outline: 'none', fontFamily: 'inherit',
                   }}
                 />
                 <input
@@ -167,14 +198,9 @@ export function Calendar({ position = [0, 0, 0] }) {
                   onKeyDown={e => { if (e.key === 'Enter') handleAdd() }}
                   maxLength={60}
                   style={{
-                    padding: '8px 12px',
-                    border: '1px solid #e8d5b0',
-                    borderRadius: '10px',
-                    fontSize: '13px',
-                    color: '#3d2b1f',
-                    background: '#fffaf6',
-                    outline: 'none',
-                    fontFamily: 'inherit',
+                    padding: '8px 12px', border: '1px solid #e8d5b0',
+                    borderRadius: '10px', fontSize: '13px', color: '#3d2b1f',
+                    background: '#fffaf6', outline: 'none', fontFamily: 'inherit',
                   }}
                 />
                 <button
@@ -183,14 +209,11 @@ export function Calendar({ position = [0, 0, 0] }) {
                   style={{
                     padding: '9px',
                     background: (!newDate || !newText.trim()) ? 'rgba(217,79,61,0.15)' : '#d94f3d',
-                    border: 'none',
-                    borderRadius: '10px',
+                    border: 'none', borderRadius: '10px',
                     color: (!newDate || !newText.trim()) ? '#c8a87a' : '#fff',
-                    fontSize: '13px',
-                    fontWeight: 600,
+                    fontSize: '13px', fontWeight: 600,
                     cursor: (!newDate || !newText.trim()) ? 'default' : 'pointer',
-                    fontFamily: 'inherit',
-                    transition: 'background 0.15s, color 0.15s',
+                    fontFamily: 'inherit', transition: 'background 0.15s, color 0.15s',
                   }}
                 >
                   aggiungi

@@ -32,19 +32,24 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
     >
       {children}
 
-      {!hovered && (
-        <Html position={[0, 0.88, 0]} center zIndexRange={[2, 1]} style={{ pointerEvents: 'none' }}>
-          <div className="click-hint" style={{
+      {/* Always-visible sparkle — communicates clickability on touch/mobile too */}
+      <Html position={[0, 0.88, 0]} center zIndexRange={[2, 1]} style={{ pointerEvents: 'none' }}>
+        <div
+          className="click-hint"
+          style={{
             pointerEvents: 'none', userSelect: 'none',
-            color: 'rgba(196,48,110,0.8)',
-            fontSize: '13px',
-            textShadow: '0 0 8px rgba(196,48,110,0.6)',
-          }}>✦</div>
-        </Html>
-      )}
+            color: hovered ? 'rgba(196,48,110,1)' : 'rgba(196,48,110,0.75)',
+            fontSize: hovered ? '16px' : '13px',
+            textShadow: hovered
+              ? '0 0 12px rgba(196,48,110,0.9)'
+              : '0 0 6px rgba(196,48,110,0.5)',
+            transition: 'font-size 0.2s, color 0.2s, text-shadow 0.2s',
+          }}
+        >✦</div>
+      </Html>
 
       {hovered && name && (
-        <Html position={[0, 0.82, 0]} center zIndexRange={[1, 1]}>
+        <Html position={[0, 0.68, 0]} center zIndexRange={[1, 1]}>
           <div style={{
             background: 'rgba(22,13,6,0.88)',
             color: 'rgba(245,237,224,0.92)',
