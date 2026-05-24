@@ -41,12 +41,12 @@ function SceneContent() {
       <TimoJar    position={[-3.1, 1.22, -1.6]} />
 
       {/* Center-left: record player on its own table */}
-      <RecordPlayer position={[-1.2, 0.0, 1.4]} />
+      <RecordPlayer position={[1.95, 0.0, 0.65]} />
 
       {/* Right side desk area: figures + notebook */}
-      <Hedgehog position={[1.8, 0.55, 0.6]} />
-      <Ladybug  position={[1.8, 0.52, 0.0]} />
-      <Notebook position={[0.8, 0.55, 1.8]} />
+      <Hedgehog position={[0.55, 0.73, 0.44]} />
+      <Ladybug  position={[-0.20, 0.66, 0.42]} />
+      <Notebook position={[-1.55, 0.55, 0.65]} />
 
       {/* Secret drawer — visible only after 20 visits */}
       <SecretDrawer position={[2.8, 0.0, -2.0]} />
