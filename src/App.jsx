@@ -38,7 +38,7 @@ function SceneContent() {
 
       {/* Left wall cluster: bookshelf + jar on top */}
       <Bookshelf  position={[-3.3, 0.0, -1.6]} />
-      <TimoJar    position={[-3.1, 1.22, -1.6]} />
+      <TimoJar    position={[-3.1, 1.42, -1.6]} />
 
       {/* Center-left: record player on its own table */}
       <RecordPlayer position={[2.20, 0.0, 0.65]} />

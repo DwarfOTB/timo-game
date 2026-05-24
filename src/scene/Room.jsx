@@ -1,3 +1,41 @@
+import { useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
+
+const TV_CHANNELS = [
+  [0.14, 0.03, 0.10], // fuchsia – music
+  [0.03, 0.07, 0.18], // blue    – night sky
+  [0.16, 0.09, 0.03], // amber   – movie
+  [0.10, 0.03, 0.16], // violet  – drama
+  [0.03, 0.12, 0.07], // green   – nature doc
+  [0.14, 0.08, 0.03], // warm    – comedy
+]
+
+function TVScreen() {
+  const meshRef = useRef()
+  useFrame(({ clock }) => {
+    if (!meshRef.current) return
+    const t = clock.getElapsedTime()
+    const ci  = Math.floor(t / 5) % TV_CHANNELS.length
+    const ni  = (ci + 1) % TV_CHANNELS.length
+    const blend = Math.min((t % 5) / 0.25, 1) // fast cut in 0.25s
+    const c = TV_CHANNELS[ci], n = TV_CHANNELS[ni]
+    meshRef.current.material.emissive.setRGB(
+      c[0] + (n[0] - c[0]) * blend,
+      c[1] + (n[1] - c[1]) * blend,
+      c[2] + (n[2] - c[2]) * blend,
+    )
+    // CRT scanline flicker
+    meshRef.current.material.emissiveIntensity =
+      0.88 + Math.sin(t * 53.7) * 0.05 + Math.sin(t * 31.2) * 0.04
+  })
+  return (
+    <mesh ref={meshRef} position={[0.5, 1.52, -3.836]}>
+      <planeGeometry args={[1.48, 0.82]} />
+      <meshStandardMaterial color="#080406" emissive="#c4306e" emissiveIntensity={0.88} roughness={0.05} metalness={0.4} />
+    </mesh>
+  )
+}
+
 export function Room() {
   return (
     <group>
@@ -115,11 +153,8 @@ export function Room() {
         <boxGeometry args={[1.62, 0.96, 0.09]} />
         <meshStandardMaterial color="#1e140e" roughness={0.45} metalness={0.1} />
       </mesh>
-      {/* Screen */}
-      <mesh position={[0.5, 1.52, -3.836]}>
-        <planeGeometry args={[1.48, 0.82]} />
-        <meshStandardMaterial color="#080406" emissive="#c4306e" emissiveIntensity={0.06} roughness={0.05} metalness={0.4} />
-      </mesh>
+      {/* Screen — animated */}
+      <TVScreen />
       {/* TV stand pole */}
       <mesh position={[0.5, 0.82, -3.87]}>
         <boxGeometry args={[0.18, 1.20, 0.09]} />

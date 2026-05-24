@@ -24,8 +24,8 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
       0.07
     )
     if (glowRef.current) {
-      const base  = hoveredRef.current ? 0.72 : 0.40
-      const pulse = Math.sin(tRef.current * 1.8) * 0.14
+      const base  = hoveredRef.current ? 0.92 : 0.52
+      const pulse = Math.sin(tRef.current * 1.8) * 0.20
       glowRef.current.material.opacity = Math.max(0, Math.min(1, base + pulse))
     }
   })
@@ -40,7 +40,7 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
     >
       {children}
 
-      <sprite ref={glowRef} scale={[glowScale * 1.6, glowScale * 1.6, 1]}>
+      <sprite ref={glowRef} scale={[glowScale * 2.2, glowScale * 2.2, 1]}>
         <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} depthTest={false} />
       </sprite>
 

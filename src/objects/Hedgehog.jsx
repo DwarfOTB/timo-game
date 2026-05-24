@@ -37,8 +37,8 @@ export function Hedgehog({ position = [0, 0, 0] }) {
     const t = clock.getElapsedTime()
     groupRef.current.position.y = position[1] + Math.sin(t * Math.PI) * 0.06
     if (glowRef.current) {
-      const base  = hoveredRef.current ? 0.72 : 0.40
-      const pulse = Math.sin(tRef.current * 1.8) * 0.14
+      const base  = hoveredRef.current ? 0.92 : 0.52
+      const pulse = Math.sin(tRef.current * 1.8) * 0.20
       glowRef.current.material.opacity = Math.max(0, Math.min(1, base + pulse))
     }
   })

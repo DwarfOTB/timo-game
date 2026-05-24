@@ -15,23 +15,24 @@ export function HUD() {
       <div style={{
         position: 'absolute', bottom: 28, left: 28,
         display: 'inline-flex', alignItems: 'center',
-        background: 'rgba(61,43,31,0.10)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
-        border: '1px solid rgba(61,43,31,0.14)',
+        background: 'rgba(22,13,6,0.75)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        border: '1px solid rgba(245,220,185,0.18)',
         borderRadius: '50px',
         padding: '8px 18px',
+        boxShadow: '0 2px 16px rgba(0,0,0,0.25)',
       }}>
         <span style={{
           fontFamily: 'Figtree, system-ui, sans-serif',
           fontSize: '14px',
           fontWeight: 600,
           letterSpacing: '0.3px',
-          color: 'rgba(61,43,31,0.75)',
+          color: 'rgba(245,220,185,0.80)',
           userSelect: 'none',
         }}>
           {days === 0 ? 'oggi comincia tutto' : (
-            <><span style={{ color: 'var(--fuchsia)', fontWeight: 700 }}>{days}</span>{' giorni insieme'}</>
+            <><span style={{ color: '#f472b6', fontWeight: 700 }}>{days}</span><span style={{ color: 'rgba(245,220,185,0.65)' }}>{' giorni insieme'}</span></>
           )}
         </span>
       </div>

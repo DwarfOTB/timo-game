@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
 import { Html } from '@react-three/drei'
 import { useRoomStore } from '../store/useRoomStore'
 import { ModalOverlay } from '../ui/ModalOverlay'
@@ -193,19 +195,29 @@ export function Plant({ position = [0, 0, 0] }) {
   const visitCount  = useRoomStore(s => s.visitCount)
   const activeModal = useRoomStore(s => s.activeModal)
   const closeModal  = useRoomStore(s => s.closeModal)
+  const swayRef     = useRef()
 
   const stage     = visitCount >= 30 ? 3 : visitCount >= 15 ? 2 : visitCount >= 5 ? 1 : 0
   const stageInfo = STAGE_DATA[stage]
   const remaining = stageInfo.next ? stageInfo.next - visitCount : null
 
+  useFrame(({ clock }) => {
+    if (!swayRef.current) return
+    const t = clock.getElapsedTime()
+    swayRef.current.rotation.z = Math.sin(t * 0.7 + 0.4) * 0.04
+    swayRef.current.rotation.x = Math.sin(t * 0.5 + 1.6) * 0.025
+  })
+
   return (
     <group position={position}>
       <InteractiveObject objectId="plant" position={[0, 0, 0]} name="la nostra pianta" glowScale={0.85} float={false}>
         <Pot />
-        {stage === 0 && <Sprout />}
-        {stage === 1 && <SmallPlant />}
-        {stage === 2 && <MediumPlant />}
-        {stage === 3 && <FullPlant />}
+        <group ref={swayRef}>
+          {stage === 0 && <Sprout />}
+          {stage === 1 && <SmallPlant />}
+          {stage === 2 && <MediumPlant />}
+          {stage === 3 && <FullPlant />}
+        </group>
       </InteractiveObject>
 
       <Html fullscreen style={{ pointerEvents: 'none' }}>

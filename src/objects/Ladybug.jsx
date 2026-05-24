@@ -33,8 +33,8 @@ export function Ladybug({ position = [0, 0, 0] }) {
     groupRef.current.rotation.z = Math.sin(t * (Math.PI * 2 / 3) + 1.5) * 0.12
     groupRef.current.position.y = position[1] + Math.sin(t * (Math.PI * 2 / 3) + 0.8) * 0.04
     if (glowRef.current) {
-      const base  = hoveredRef.current ? 0.72 : 0.40
-      const pulse = Math.sin(tRef.current * 1.8) * 0.14
+      const base  = hoveredRef.current ? 0.92 : 0.52
+      const pulse = Math.sin(tRef.current * 1.8) * 0.20
       glowRef.current.material.opacity = Math.max(0, Math.min(1, base + pulse))
     }
   })

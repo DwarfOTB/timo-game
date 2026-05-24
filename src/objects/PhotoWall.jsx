@@ -27,26 +27,59 @@ function Polaroid({ photo, index, onSelect, showCaption }) {
       onPointerEnter={() => { setHov(true);  document.body.style.cursor = 'pointer' }}
       onPointerLeave={() => { setHov(false); document.body.style.cursor = 'default' }}
     >
+      {/* Shadow behind polaroid */}
+      {hov && (
+        <mesh position={[-0.004, 0, 0]}>
+          <boxGeometry args={[0.02, 0.90, 0.72]} />
+          <meshStandardMaterial color="#000000" transparent opacity={0.25} depthWrite={false} />
+        </mesh>
+      )}
+      {/* Main polaroid body */}
       <mesh castShadow>
-        <boxGeometry args={[0.04, 0.82, 0.64]} />
+        <boxGeometry args={[0.04, 0.88, 0.70]} />
         <meshStandardMaterial
-          color={hov ? '#f5f0e8' : '#ffffff'}
-          roughness={0.7}
-          emissive="#c4306e"
-          emissiveIntensity={hov ? 0.18 : 0.055}
+          color={hov ? '#fffcf8' : '#faf7f2'}
+          roughness={0.6}
+          emissive="#e8306e"
+          emissiveIntensity={hov ? 0.22 : 0.04}
         />
       </mesh>
-      <mesh position={[0, -0.33, 0]}>
-        <boxGeometry args={[0.04, 0.14, 0.64]} />
+      {/* Color bottom strip */}
+      <mesh position={[0, -0.36, 0]}>
+        <boxGeometry args={[0.042, 0.14, 0.70]} />
         <meshStandardMaterial color={accent} roughness={0.8} />
       </mesh>
-      <Html transform position={[0.022, 0.05, 0]} scale={0.008}>
-        <div style={{ width: '70px', height: '70px', overflow: 'hidden', background: '#f0e8e0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <img src={photo.src} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} onError={e => { e.currentTarget.style.display = 'none' }} />
+      {/* Photo area */}
+      <Html transform position={[0.022, 0.06, 0]} scale={0.0085}>
+        <div style={{
+          width: '74px', height: '74px',
+          overflow: 'hidden',
+          background: '#e8ddd0',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          borderRadius: '1px',
+        }}>
+          <img
+            src={photo.src}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+            onError={e => {
+              e.currentTarget.style.display = 'none'
+              e.currentTarget.parentNode.innerHTML = '<div style="font-size:28px;opacity:0.35">📷</div>'
+            }}
+          />
         </div>
         {showCaption && photo.caption && (
-          <div style={{ width: '70px', marginTop: '3px', fontSize: '8px', color: '#5c3d2e', textAlign: 'center', fontFamily: 'Caveat, cursive', lineHeight: 1.3 }}>
+          <div style={{ width: '74px', marginTop: '4px', fontSize: '8px', color: '#5c3d2e', textAlign: 'center', fontFamily: 'Caveat, cursive', lineHeight: 1.3 }}>
             {photo.caption}
+          </div>
+        )}
+        {hov && (
+          <div style={{
+            position: 'absolute', bottom: '-18px', left: '50%', transform: 'translateX(-50%)',
+            fontSize: '8px', color: '#c4306e', fontFamily: 'Caveat, cursive',
+            whiteSpace: 'nowrap', letterSpacing: '0.5px',
+          }}>
+            apri →
           </div>
         )}
       </Html>
@@ -89,6 +122,38 @@ export function PhotoWall() {
 
   return (
     <group>
+      {/* Cork board frame + backing */}
+      <mesh position={[-3.97, 2.35, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[4.0, 3.8]} />
+        <meshStandardMaterial color="#4a2e14" roughness={0.95} />
+      </mesh>
+      <mesh position={[-3.96, 2.35, 0]} rotation={[0, Math.PI / 2, 0]}>
+        <planeGeometry args={[3.70, 3.50]} />
+        <meshStandardMaterial color="#8b5a2b" roughness={0.98} />
+      </mesh>
+      {/* "📷 foto" label pinned top-center */}
+      <group position={[-3.87, 4.00, -0.10]} rotation={[0, Math.PI / 2, 0]}>
+        <Html transform scale={0.015} center>
+          <div style={{
+            fontFamily: 'Caveat, cursive',
+            fontSize: '18px',
+            fontWeight: 700,
+            color: '#f5e0c0',
+            background: 'rgba(20,10,4,0.72)',
+            border: '1px solid rgba(196,48,110,0.45)',
+            padding: '3px 16px 3px 12px',
+            borderRadius: '20px',
+            whiteSpace: 'nowrap',
+            letterSpacing: '2px',
+            boxShadow: '0 2px 12px rgba(0,0,0,0.4)',
+            pointerEvents: 'none',
+            userSelect: 'none',
+          }}>
+            📷 i nostri ricordi
+          </div>
+        </Html>
+      </group>
+
       {PHOTOS.map((photo, i) => (
         <Polaroid key={photo.id} photo={photo} index={i} onSelect={handleSelect} showCaption={showCaptions} />
       ))}

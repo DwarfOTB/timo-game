@@ -80,8 +80,8 @@ export function Bookshelf({ position = [0, 0, 0] }) {
   useFrame((_, delta) => {
     tRef.current += delta
     if (glowRef.current) {
-      const base  = hoveredRef.current ? 0.65 : 0.35
-      const pulse = Math.sin(tRef.current * 1.6) * 0.12
+      const base  = hoveredRef.current ? 0.88 : 0.50
+      const pulse = Math.sin(tRef.current * 1.6) * 0.20
       glowRef.current.material.opacity = Math.max(0, Math.min(1, base + pulse))
     }
   })
@@ -132,7 +132,7 @@ export function Bookshelf({ position = [0, 0, 0] }) {
         <BookRow books={TOP_BOOKS} yBase={H * 0.50 + T} timoIdx={2} />
         <BookRow books={BOT_BOOKS} yBase={T} />
 
-        <sprite ref={glowRef} position={[0, H / 2, 0]} scale={[1.6, 1.6, 1]}>
+        <sprite ref={glowRef} position={[0, H / 2, 0]} scale={[2.6, 2.8, 1]}>
           <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} depthTest={false} />
         </sprite>
 
