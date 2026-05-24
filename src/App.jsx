@@ -22,7 +22,7 @@ import { useVisitSystem } from './hooks/useVisitSystem'
 function SceneContent() {
   return (
     <>
-      <color attach="background" args={['#f9f3ea']} />
+      <color attach="background" args={['#1e1408']} />
       <Camera />
       <Lighting />
       <Room />
@@ -41,7 +41,7 @@ function SceneContent() {
       <TimoJar    position={[-3.1, 1.22, -1.6]} />
 
       {/* Center-left: record player on its own table */}
-      <RecordPlayer position={[1.95, 0.0, 0.65]} />
+      <RecordPlayer position={[2.20, 0.0, 0.65]} />
 
       {/* Right side desk area: figures + notebook */}
       <Hedgehog position={[0.55, 0.73, 0.44]} />
@@ -63,7 +63,7 @@ export default function App() {
         gl={{ antialias: true, alpha: false }}
         dpr={Math.min(window.devicePixelRatio, 2)}
         shadows
-        style={{ background: '#f9f3ea' }}
+        style={{ background: '#1e1408' }}
       >
         <SceneContent />
       </Canvas>

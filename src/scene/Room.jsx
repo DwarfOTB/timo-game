@@ -5,7 +5,7 @@ export function Room() {
       {/* ── FLOOR ─────────────────────────────────────── */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} receiveShadow>
         <planeGeometry args={[8, 8]} />
-        <meshStandardMaterial color="#e8d5b0" roughness={0.9} />
+        <meshStandardMaterial color="#c8a870" roughness={0.9} />
       </mesh>
 
       {/* Main rug — couch sits on this */}
@@ -21,21 +21,21 @@ export function Room() {
       {/* ── WALLS ─────────────────────────────────────── */}
       <mesh position={[-4, 2.5, 0]} rotation={[0, Math.PI / 2, 0]} receiveShadow>
         <planeGeometry args={[8, 5]} />
-        <meshStandardMaterial color="#f5ede0" roughness={0.95} />
+        <meshStandardMaterial color="#cdb888" roughness={0.95} />
       </mesh>
       <mesh position={[0, 2.5, -4]} receiveShadow>
         <planeGeometry args={[8, 5]} />
-        <meshStandardMaterial color="#ede5d8" roughness={0.95} />
+        <meshStandardMaterial color="#c4aa80" roughness={0.95} />
       </mesh>
 
       {/* Baseboards */}
       <mesh position={[-3.98, 0.09, 0]} rotation={[0, Math.PI / 2, 0]}>
         <boxGeometry args={[8, 0.18, 0.04]} />
-        <meshStandardMaterial color="#d6c6a8" roughness={0.9} />
+        <meshStandardMaterial color="#b8a070" roughness={0.9} />
       </mesh>
       <mesh position={[0, 0.09, -3.98]}>
         <boxGeometry args={[8, 0.18, 0.04]} />
-        <meshStandardMaterial color="#ccc0aa" roughness={0.9} />
+        <meshStandardMaterial color="#b09060" roughness={0.9} />
       </mesh>
       {/* Fuchsia accent strip left wall */}
       <mesh position={[-3.98, 0.22, 0]} rotation={[0, Math.PI / 2, 0]}>
@@ -160,40 +160,40 @@ export function Room() {
       })}
 
       {/* ── WALL SHELF below calendar ─────────────── */}
-      <mesh position={[0.96, 1.56, -3.89]}>
+      <mesh position={[1.46, 1.56, -3.89]}>
         <boxGeometry args={[0.042, 0.15, 0.24]} />
         <meshStandardMaterial color="#5c3d28" roughness={0.9} />
       </mesh>
-      <mesh position={[2.28, 1.56, -3.89]}>
+      <mesh position={[2.78, 1.56, -3.89]}>
         <boxGeometry args={[0.042, 0.15, 0.24]} />
         <meshStandardMaterial color="#5c3d28" roughness={0.9} />
       </mesh>
-      <mesh position={[1.60, 1.64, -3.88]} castShadow>
+      <mesh position={[2.10, 1.64, -3.88]} castShadow>
         <boxGeometry args={[1.48, 0.046, 0.26]} />
         <meshStandardMaterial color="#7a5c3e" roughness={0.80} />
       </mesh>
       {/* Shelf items */}
-      <mesh position={[1.04, 1.72, -3.82]}>
+      <mesh position={[1.54, 1.72, -3.82]}>
         <cylinderGeometry args={[0.055, 0.044, 0.108, 10]} />
         <meshStandardMaterial color="#c4306e" roughness={0.85} />
       </mesh>
-      <mesh position={[1.04, 1.79, -3.82]}>
+      <mesh position={[1.54, 1.79, -3.82]}>
         <sphereGeometry args={[0.068, 8, 6]} />
         <meshStandardMaterial color="#6b9442" roughness={0.7} />
       </mesh>
-      <mesh position={[1.50, 1.70, -3.82]} rotation={[0, 0.12, 0]}>
+      <mesh position={[2.00, 1.70, -3.82]} rotation={[0, 0.12, 0]}>
         <boxGeometry args={[0.065, 0.152, 0.112]} />
         <meshStandardMaterial color="#c4306e" roughness={0.85} />
       </mesh>
-      <mesh position={[1.64, 1.70, -3.82]} rotation={[0, -0.08, 0]}>
+      <mesh position={[2.14, 1.70, -3.82]} rotation={[0, -0.08, 0]}>
         <boxGeometry args={[0.057, 0.124, 0.102]} />
         <meshStandardMaterial color="#e8a0b0" roughness={0.85} />
       </mesh>
-      <mesh position={[2.05, 1.69, -3.82]}>
+      <mesh position={[2.55, 1.69, -3.82]}>
         <cylinderGeometry args={[0.033, 0.033, 0.102, 10]} />
         <meshStandardMaterial color="#f4d4c8" roughness={0.8} />
       </mesh>
-      <mesh position={[2.05, 1.75, -3.82]}>
+      <mesh position={[2.55, 1.75, -3.82]}>
         <cylinderGeometry args={[0.003, 0.003, 0.056, 5]} />
         <meshStandardMaterial color="#8b6347" roughness={0.8} />
       </mesh>
