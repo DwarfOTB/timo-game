@@ -84,8 +84,8 @@ export function Hedgehog({ position = [0, 0, 0] }) {
             <meshStandardMaterial color="#d4a07a" transparent opacity={0.25} emissive="#d4a07a" emissiveIntensity={0.4} />
           </mesh>
         )}
-        <sprite ref={glowRef} scale={[0.65, 0.65, 1]}>
-          <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} />
+        <sprite ref={glowRef} scale={[1.2, 1.2, 1]}>
+          <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} depthTest={false} />
         </sprite>
       </group>
 

@@ -80,8 +80,8 @@ export function Ladybug({ position = [0, 0, 0] }) {
             <meshStandardMaterial color="#f4826f" transparent opacity={0.28} emissive="#f4826f" emissiveIntensity={0.5} />
           </mesh>
         )}
-        <sprite ref={glowRef} scale={[0.6, 0.6, 1]}>
-          <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} />
+        <sprite ref={glowRef} scale={[1.1, 1.1, 1]}>
+          <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} depthTest={false} />
         </sprite>
       </group>
 

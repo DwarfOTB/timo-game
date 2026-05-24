@@ -40,8 +40,8 @@ export function InteractiveObject({ children, objectId, position = [0, 0, 0], na
     >
       {children}
 
-      <sprite ref={glowRef} scale={[glowScale, glowScale, 1]}>
-        <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} />
+      <sprite ref={glowRef} scale={[glowScale * 1.6, glowScale * 1.6, 1]}>
+        <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} depthTest={false} />
       </sprite>
 
       {hovered && name && (

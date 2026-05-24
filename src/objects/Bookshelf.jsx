@@ -132,8 +132,8 @@ export function Bookshelf({ position = [0, 0, 0] }) {
         <BookRow books={TOP_BOOKS} yBase={H * 0.50 + T} timoIdx={2} />
         <BookRow books={BOT_BOOKS} yBase={T} />
 
-        <sprite ref={glowRef} position={[0, H / 2, 0]} scale={[1.4, 1.4, 1]}>
-          <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} />
+        <sprite ref={glowRef} position={[0, H / 2, 0]} scale={[1.6, 1.6, 1]}>
+          <spriteMaterial map={GLOW_TEX} transparent depthWrite={false} depthTest={false} />
         </sprite>
 
         {hovered && (
