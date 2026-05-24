@@ -1,4 +1,7 @@
+import { Html } from '@react-three/drei'
 import { useRoomStore } from '../store/useRoomStore'
+import { ModalOverlay } from '../ui/ModalOverlay'
+import { InteractiveObject } from './InteractiveObject'
 
 const POT_COLOR    = '#c4956a'
 const POT_RIM      = '#a87a55'
@@ -17,12 +20,10 @@ function Pot() {
         <cylinderGeometry args={[0.18, 0.14, 0.36, 12]} />
         <meshStandardMaterial color={POT_COLOR} roughness={0.9} />
       </mesh>
-      {/* Rim */}
       <mesh position={[0, 0.37, 0]}>
         <cylinderGeometry args={[0.20, 0.18, 0.05, 12]} />
         <meshStandardMaterial color={POT_RIM} roughness={0.85} />
       </mesh>
-      {/* Soil */}
       <mesh position={[0, 0.365, 0]}>
         <cylinderGeometry args={[0.17, 0.17, 0.02, 12]} />
         <meshStandardMaterial color={SOIL_COLOR} roughness={1} />
@@ -31,7 +32,6 @@ function Pot() {
   )
 }
 
-// Stage 1: tiny sprout (visits 1–4)
 function Sprout() {
   return (
     <group position={[0, 0.39, 0]}>
@@ -51,16 +51,13 @@ function Sprout() {
   )
 }
 
-// Stage 2: small plant (visits 5–14)
 function SmallPlant() {
   return (
     <group position={[0, 0.39, 0]}>
-      {/* Main stem */}
       <mesh position={[0, 0.20, 0]}>
         <cylinderGeometry args={[0.022, 0.022, 0.40, 6]} />
         <meshStandardMaterial color={STEM_COLOR} roughness={0.8} />
       </mesh>
-      {/* Side stems */}
       <mesh position={[0.10, 0.16, 0]} rotation={[0, 0, 0.55]}>
         <cylinderGeometry args={[0.016, 0.016, 0.22, 6]} />
         <meshStandardMaterial color={STEM_COLOR} roughness={0.8} />
@@ -69,7 +66,6 @@ function SmallPlant() {
         <cylinderGeometry args={[0.016, 0.016, 0.22, 6]} />
         <meshStandardMaterial color={STEM_COLOR} roughness={0.8} />
       </mesh>
-      {/* Leaves */}
       {[
         { p: [ 0.14, 0.27, 0],  r: [0, 0,  0.6],  s: [1, 0.40, 0.6] },
         { p: [-0.14, 0.27, 0],  r: [0, 0, -0.6],  s: [1, 0.40, 0.6] },
@@ -86,7 +82,6 @@ function SmallPlant() {
   )
 }
 
-// Stage 3: medium with bud (visits 15–29)
 function MediumPlant() {
   return (
     <group position={[0, 0.39, 0]}>
@@ -102,7 +97,6 @@ function MediumPlant() {
         <cylinderGeometry args={[0.018, 0.018, 0.28, 6]} />
         <meshStandardMaterial color={STEM_COLOR} roughness={0.8} />
       </mesh>
-      {/* More leaves */}
       {[
         { p: [ 0.18, 0.33, 0],   s: [1.1, 0.38, 0.6] },
         { p: [-0.18, 0.33, 0],   s: [1.1, 0.38, 0.6] },
@@ -116,7 +110,6 @@ function MediumPlant() {
           <meshStandardMaterial color={i % 2 === 0 ? LEAF_COLOR : LEAF_DARK} roughness={0.7} />
         </mesh>
       ))}
-      {/* Bud */}
       <mesh position={[0, 0.66, 0]}>
         <sphereGeometry args={[0.07, 10, 8]} />
         <meshStandardMaterial color={BUD_COLOR} roughness={0.7} />
@@ -125,7 +118,6 @@ function MediumPlant() {
   )
 }
 
-// Stage 4: full bloom (visits 30+)
 function FullPlant() {
   return (
     <group position={[0, 0.39, 0]}>
@@ -144,7 +136,6 @@ function FullPlant() {
           <meshStandardMaterial color={STEM_COLOR} roughness={0.8} />
         </mesh>
       ))}
-      {/* Leaves */}
       {[
         [0.20, 0.36, 0], [-0.20, 0.36, 0], [0.14, 0.50, 0.06],
         [-0.14, 0.50,-0.06], [0, 0.58, 0], [0.08, 0.65, 0], [-0.08, 0.65, 0],
@@ -154,12 +145,10 @@ function FullPlant() {
           <meshStandardMaterial color={i % 2 === 0 ? LEAF_COLOR : LEAF_DARK} roughness={0.7} />
         </mesh>
       ))}
-      {/* Flower center */}
       <mesh position={[0, 0.74, 0]}>
         <sphereGeometry args={[0.09, 12, 10]} />
         <meshStandardMaterial color="#f5d060" roughness={0.6} />
       </mesh>
-      {/* Petals */}
       {Array.from({ length: 6 }).map((_, i) => {
         const angle = (i / 6) * Math.PI * 2
         return (
@@ -177,21 +166,84 @@ function FullPlant() {
   )
 }
 
-export function Plant({ position = [0, 0, 0] }) {
-  const visitCount = useRoomStore(s => s.visitCount)
+const STAGE_DATA = [
+  {
+    emoji: '🌱',
+    text: 'Ha appena cominciato.\n\nCome noi.',
+    next: 5,
+  },
+  {
+    emoji: '🌿',
+    text: 'Sta crescendo.\n\nPiano piano.',
+    next: 15,
+  },
+  {
+    emoji: '🌸',
+    text: 'Un bocciolo.\n\nQuasi pronta.',
+    next: 30,
+  },
+  {
+    emoji: '🌺',
+    text: 'In piena fioritura.\n\nCome tutto questo.',
+    next: null,
+  },
+]
 
-  const stage = visitCount >= 30 ? 3
-    : visitCount >= 15            ? 2
-    : visitCount >= 5             ? 1
-    : 0
+export function Plant({ position = [0, 0, 0] }) {
+  const visitCount  = useRoomStore(s => s.visitCount)
+  const activeModal = useRoomStore(s => s.activeModal)
+  const closeModal  = useRoomStore(s => s.closeModal)
+
+  const stage     = visitCount >= 30 ? 3 : visitCount >= 15 ? 2 : visitCount >= 5 ? 1 : 0
+  const stageInfo = STAGE_DATA[stage]
+  const remaining = stageInfo.next ? stageInfo.next - visitCount : null
 
   return (
     <group position={position}>
-      <Pot />
-      {stage === 0 && <Sprout />}
-      {stage === 1 && <SmallPlant />}
-      {stage === 2 && <MediumPlant />}
-      {stage === 3 && <FullPlant />}
+      <InteractiveObject objectId="plant" position={[0, 0, 0]} name="la nostra pianta" glowScale={0.85} float={false}>
+        <Pot />
+        {stage === 0 && <Sprout />}
+        {stage === 1 && <SmallPlant />}
+        {stage === 2 && <MediumPlant />}
+        {stage === 3 && <FullPlant />}
+      </InteractiveObject>
+
+      <Html fullscreen style={{ pointerEvents: 'none' }}>
+        <ModalOverlay isOpen={activeModal === 'plant'} onClose={closeModal} dark>
+          <div style={{
+            width: '100%', maxWidth: '300px',
+            background: 'rgba(6,16,6,0.92)',
+            border: '1px solid rgba(90,122,58,0.28)',
+            borderRadius: '20px',
+            padding: '40px 32px 32px',
+            textAlign: 'center',
+          }}>
+            <div style={{ fontSize: '38px', marginBottom: '20px' }}>{stageInfo.emoji}</div>
+            <div style={{
+              fontFamily: 'Caveat, cursive',
+              fontSize: '24px',
+              lineHeight: 1.9,
+              color: '#e8f4e4',
+              whiteSpace: 'pre-wrap',
+              marginBottom: remaining ? '24px' : '0',
+            }}>
+              {stageInfo.text}
+            </div>
+            {remaining && (
+              <div style={{
+                fontFamily: 'Figtree, system-ui, sans-serif',
+                fontSize: '11px',
+                letterSpacing: '0.8px',
+                color: 'rgba(180,210,150,0.35)',
+                borderTop: '1px solid rgba(90,122,58,0.15)',
+                paddingTop: '16px',
+              }}>
+                ancora {remaining} visita{remaining !== 1 ? 'e' : ''} per vederla crescere
+              </div>
+            )}
+          </div>
+        </ModalOverlay>
+      </Html>
     </group>
   )
 }

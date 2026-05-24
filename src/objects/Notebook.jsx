@@ -1,4 +1,3 @@
-import '@fontsource/caveat'
 import { useRef, useState, useEffect } from 'react'
 import { Html } from '@react-three/drei'
 import { useRoomStore } from '../store/useRoomStore'
@@ -35,8 +34,7 @@ export function Notebook({ position = [0, 0, 0] }) {
   const activeModal   = useRoomStore(s => s.activeModal)
   const closeModal    = useRoomStore(s => s.closeModal)
   const unlockedItems = useRoomStore(s => s.unlockedItems)
-  const hasPage2      = unlockedItems.includes('letter-page-2')
-  const [openedOnce, setOpenedOnce] = useState(false)
+  const hasPage2 = unlockedItems.includes('letter-page-2')
 
   return (
     <group position={position}>
@@ -82,7 +80,7 @@ export function Notebook({ position = [0, 0, 0] }) {
               background: 'linear-gradient(to right, #fdf8f2, #faf4ec)',
             }}>
               <div style={{ fontFamily: 'Caveat, cursive', fontSize: '22px', lineHeight: 1.85, color: '#3d2b1f' }}>
-                <TypewriterText text={LETTER.page1.content} instant={_typedThisSession || openedOnce} />
+                <TypewriterText text={LETTER.page1.content} instant={_typedThisSession} />
               </div>
             </div>
 

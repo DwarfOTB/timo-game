@@ -45,7 +45,7 @@ export function ModalOverlay({ isOpen, onClose, dark = false, children }) {
               color: 'rgba(255,255,255,0.6)',
               fontSize: '15px', cursor: 'pointer',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              fontFamily: 'system-ui',
+              fontFamily: 'Figtree, system-ui, sans-serif',
               transition: 'background 0.15s, color 0.15s',
               zIndex: 102,
             }}

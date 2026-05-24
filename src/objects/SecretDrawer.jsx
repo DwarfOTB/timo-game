@@ -73,7 +73,7 @@ export function SecretDrawer({ position = [0, 0, 0] }) {
             padding: '44px 36px 36px',
             fontFamily: 'Caveat, cursive',
           }}>
-            <div style={{ fontSize: '11px', color: 'rgba(245,237,224,0.18)', letterSpacing: '2px', marginBottom: '32px', textAlign: 'center', fontFamily: 'system-ui' }}>
+            <div style={{ fontSize: '11px', color: 'rgba(245,237,224,0.18)', letterSpacing: '2px', marginBottom: '32px', textAlign: 'center', fontFamily: 'Figtree, system-ui, sans-serif' }}>
               {noteIdx + 1} / {NOTES.length}
             </div>
 

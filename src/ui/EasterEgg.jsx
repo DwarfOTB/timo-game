@@ -91,7 +91,7 @@ export function EasterEgg() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 4, duration: 1 }}
-                style={{ marginTop: '56px', fontSize: '11px', color: 'rgba(245,237,224,0.2)', letterSpacing: '1px', fontFamily: 'system-ui' }}
+                style={{ marginTop: '56px', fontSize: '11px', color: 'rgba(245,237,224,0.2)', letterSpacing: '1px', fontFamily: 'Figtree, system-ui, sans-serif' }}
               >
                 tocca per chiudere
               </motion.div>

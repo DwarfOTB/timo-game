@@ -45,7 +45,7 @@ export function FirstVisit() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 1 }}
               style={{
-                fontFamily: 'system-ui',
+                fontFamily: 'Figtree, system-ui, sans-serif',
                 fontSize: '11px',
                 letterSpacing: '4px',
                 color: 'rgba(245,237,224,0.3)',
@@ -77,7 +77,7 @@ export function FirstVisit() {
               transition={{ delay: 4.5, duration: 1.5 }}
               style={{
                 marginTop: '56px',
-                fontFamily: 'system-ui',
+                fontFamily: 'Figtree, system-ui, sans-serif',
                 fontSize: '11px',
                 color: 'rgba(245,237,224,0.2)',
                 letterSpacing: '1px',
