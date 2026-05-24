@@ -8,11 +8,11 @@ export function Camera() {
 
   // Responsive zoom: scales with viewport, fits room on all screens
   // Desktop 1440×900 → ~60, iPhone 13 landscape 844×390 → ~35
-  const zoom = Math.min(size.width / 24, size.height / 11)
+  const zoom = Math.min(size.width / 27, size.height / 13)
 
   useEffect(() => {
     if (camRef.current) {
-      camRef.current.lookAt(0, 1.5, 0)
+      camRef.current.lookAt(-0.3, 2.0, -0.8)
       camRef.current.updateProjectionMatrix()
     }
   }, [zoom])

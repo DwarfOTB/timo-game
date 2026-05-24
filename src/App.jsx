@@ -68,6 +68,12 @@ export default function App() {
         <SceneContent />
       </Canvas>
 
+      {/* Cinematic vignette */}
+      <div style={{
+        position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 4,
+        background: 'radial-gradient(ellipse at 50% 42%, transparent 42%, rgba(8,4,1,0.58) 100%)',
+      }} />
+
       <HUD />
       <FirstVisit />
       <UnlockToast />

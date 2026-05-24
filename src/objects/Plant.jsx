@@ -204,8 +204,8 @@ export function Plant({ position = [0, 0, 0] }) {
   useFrame(({ clock }) => {
     if (!swayRef.current) return
     const t = clock.getElapsedTime()
-    swayRef.current.rotation.z = Math.sin(t * 0.7 + 0.4) * 0.04
-    swayRef.current.rotation.x = Math.sin(t * 0.5 + 1.6) * 0.025
+    swayRef.current.rotation.z = Math.sin(t * 0.7 + 0.4) * 0.08
+    swayRef.current.rotation.x = Math.sin(t * 0.5 + 1.6) * 0.05
   })
 
   return (

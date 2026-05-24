@@ -41,7 +41,7 @@ export function RecordPlayer({ position = [0, 0, 0] }) {
 
   useFrame(() => {
     if (!platRef.current) return
-    platRef.current.rotation.y += audioPlaying ? 0.018 : 0.004
+    platRef.current.rotation.y += audioPlaying ? 0.025 : 0.016
   })
 
   const isSongUnlocked = (song) =>

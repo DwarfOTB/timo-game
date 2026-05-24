@@ -1,37 +1,27 @@
 import { useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 
-const TV_CHANNELS = [
-  [0.14, 0.03, 0.10], // fuchsia – music
-  [0.03, 0.07, 0.18], // blue    – night sky
-  [0.16, 0.09, 0.03], // amber   – movie
-  [0.10, 0.03, 0.16], // violet  – drama
-  [0.03, 0.12, 0.07], // green   – nature doc
-  [0.14, 0.08, 0.03], // warm    – comedy
-]
+// Vivid hex colors — set directly on material.emissive
+const TV_CHANNELS = ['#c4306e', '#2244bb', '#cc7711', '#7722bb', '#1e8844', '#bb4422']
 
 function TVScreen() {
   const meshRef = useRef()
   useFrame(({ clock }) => {
     if (!meshRef.current) return
     const t = clock.getElapsedTime()
-    const ci  = Math.floor(t / 5) % TV_CHANNELS.length
-    const ni  = (ci + 1) % TV_CHANNELS.length
-    const blend = Math.min((t % 5) / 0.25, 1) // fast cut in 0.25s
-    const c = TV_CHANNELS[ci], n = TV_CHANNELS[ni]
-    meshRef.current.material.emissive.setRGB(
-      c[0] + (n[0] - c[0]) * blend,
-      c[1] + (n[1] - c[1]) * blend,
-      c[2] + (n[2] - c[2]) * blend,
-    )
-    // CRT scanline flicker
-    meshRef.current.material.emissiveIntensity =
-      0.88 + Math.sin(t * 53.7) * 0.05 + Math.sin(t * 31.2) * 0.04
+    const ci = Math.floor(t / 4) % TV_CHANNELS.length
+    const localT = t % 4
+    // Brief bright flash on channel change (first 0.12s of each phase)
+    const flash = localT < 0.12
+    meshRef.current.material.emissive.set(TV_CHANNELS[ci])
+    meshRef.current.material.emissiveIntensity = flash
+      ? 1.6 + Math.sin(t * 120) * 0.3
+      : 0.90 + Math.sin(t * 47.3) * 0.06 + Math.sin(t * 29.1) * 0.04
   })
   return (
     <mesh ref={meshRef} position={[0.5, 1.52, -3.836]}>
       <planeGeometry args={[1.48, 0.82]} />
-      <meshStandardMaterial color="#080406" emissive="#c4306e" emissiveIntensity={0.88} roughness={0.05} metalness={0.4} />
+      <meshStandardMaterial color="#040204" emissive="#c4306e" emissiveIntensity={0.90} roughness={0.02} metalness={0.5} />
     </mesh>
   )
 }

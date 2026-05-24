@@ -21,36 +21,34 @@ function Polaroid({ photo, index, onSelect, showCaption }) {
 
   return (
     <group
-      position={[-3.87, y, z]}
+      position={[-3.94, y, z]}
       rotation={[0, Math.PI / 2, tilt(index)]}
       onClick={(e) => { e.stopPropagation(); onSelect(index) }}
       onPointerEnter={() => { setHov(true);  document.body.style.cursor = 'pointer' }}
       onPointerLeave={() => { setHov(false); document.body.style.cursor = 'default' }}
     >
-      {/* Shadow behind polaroid */}
-      {hov && (
-        <mesh position={[-0.004, 0, 0]}>
-          <boxGeometry args={[0.02, 0.90, 0.72]} />
-          <meshStandardMaterial color="#000000" transparent opacity={0.25} depthWrite={false} />
-        </mesh>
-      )}
-      {/* Main polaroid body */}
+      {/* Main polaroid body — flat against wall: [wide_z, tall_y, thin_x] */}
       <mesh castShadow>
-        <boxGeometry args={[0.04, 0.88, 0.70]} />
+        <boxGeometry args={[0.70, 0.88, 0.016]} />
         <meshStandardMaterial
           color={hov ? '#fffcf8' : '#faf7f2'}
           roughness={0.6}
           emissive="#e8306e"
-          emissiveIntensity={hov ? 0.22 : 0.04}
+          emissiveIntensity={hov ? 0.28 : 0.05}
         />
       </mesh>
       {/* Color bottom strip */}
       <mesh position={[0, -0.36, 0]}>
-        <boxGeometry args={[0.042, 0.14, 0.70]} />
+        <boxGeometry args={[0.70, 0.14, 0.018]} />
         <meshStandardMaterial color={accent} roughness={0.8} />
       </mesh>
-      {/* Photo area */}
-      <Html transform position={[0.022, 0.06, 0]} scale={0.0085}>
+      {/* Push pin tack */}
+      <mesh position={[0, 0.39, -0.012]}>
+        <sphereGeometry args={[0.022, 8, 6]} />
+        <meshStandardMaterial color="#c4306e" roughness={0.4} metalness={0.5} />
+      </mesh>
+      {/* Photo area — local Z negative = world +X (toward room) */}
+      <Html transform position={[0, 0.06, -0.012]} scale={0.0085}>
         <div style={{
           width: '74px', height: '74px',
           overflow: 'hidden',
@@ -132,7 +130,7 @@ export function PhotoWall() {
         <meshStandardMaterial color="#8b5a2b" roughness={0.98} />
       </mesh>
       {/* "📷 foto" label pinned top-center */}
-      <group position={[-3.87, 4.00, -0.10]} rotation={[0, Math.PI / 2, 0]}>
+      <group position={[-3.94, 4.05, -0.10]} rotation={[0, Math.PI / 2, 0]}>
         <Html transform scale={0.015} center>
           <div style={{
             fontFamily: 'Caveat, cursive',
